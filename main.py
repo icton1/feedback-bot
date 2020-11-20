@@ -1,8 +1,14 @@
 import logging
 
 from telegram import Update, ReplyKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-
+from telegram.ext import (
+    Updater,
+    CommandHandler,
+    MessageHandler,
+    Filters,
+    ConversationHandler,
+    CallbackContext,
+)
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -23,15 +29,63 @@ def help_command(update: Update, context: CallbackContext) -> None:
     update.message.reply_text('Help!')
 
 
-def echo(update: Update, context: CallbackContext) -> None:
+def read_msg(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
-    update.message.reply_text(update.message.text)
+    if update.message.text=='Отзыв о преподователе':
+        reply_keyboard = [['Читать', 'Добавить']]
+        update.message.reply_text('Вы хотите прочитать или добавить?',)
+        print(update.message.text)
+        update.message.reply_text(update.message.text, reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
+def alarm(context):
+    """Send the alarm message."""
+    job = context.job
+    context.bot.send_message(job.context, text='Beep!')
+
+    
+def remove_job_if_exists(name, context):
+    """Remove job with given name. Returns whether job was removed."""
+    current_jobs = context.job_queue.get_jobs_by_name(name)
+    if not current_jobs:
+        return False
+    for job in current_jobs:
+        job.schedule_removal()
+    return True
+
+
+def set_alarm(update: Update, context: CallbackContext) -> None:
+    """Add a job to the queue."""
+    chat_id = update.message.chat_id
+    try:
+        # args[0] should contain the time in mm:dd:hh:mm format
+        due = int(context.args[0])
+        if due < 0:
+            update.message.reply_text('Sorry we can not go back to future!')
+            return
+
+        job_removed = remove_job_if_exists(str(chat_id), context)
+        context.job_queue.run_once(alarm, due, context=chat_id, name=str(chat_id))
+
+        text = 'Timer successfully set!'
+        if job_removed:
+            text += ' Old one was removed.'
+        update.message.reply_text(text)
+
+    except (IndexError, ValueError):
+        update.message.reply_text('Usage: /set <seconds>')
+
+
+def unset(update: Update, context: CallbackContext) -> None:
+    """Remove the job if the user changed their mind."""
+    chat_id = update.message.chat_id
+    job_removed = remove_job_if_exists(str(chat_id), context)
+    text = 'Timer successfully cancelled!' if job_removed else 'You have no active timer.'
+    update.message.reply_text(text)
 
 def keyboard(update: Update, context: CallbackContext) -> None:
     """get a keyboard."""
     reply_keyboard = [['Напомнить о дедлайне', 'Напомнить о паре'], ['Обратиться в центр качества образования',
-                       'Нужна помощь с предметом?']]
+                       'Нужна помощь с предметом?'], ['Отзыв о преподователе']]
     update.message.reply_text(update.message.text,
                               reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
@@ -53,7 +107,7 @@ def main():
     dispatcher.add_handler(CommandHandler("keyboard", keyboard))
 
     # on noncommand i.e message - echo the message on Telegram
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, read_msg))
 
     # Start the Bot
     updater.start_polling()
