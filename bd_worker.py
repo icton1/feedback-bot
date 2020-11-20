@@ -7,7 +7,7 @@ def add_new_teacher(name, description, rating, number=None):
         teachers[name] = {"feedback": [], "ratings": []}
         teachers[name]["feedback"].append(description)
         teachers[name]["ratings"].append(rating)
-        teachers[name]["number"].append(number)
+        teachers[name]["number"]=number
     with open('teachers.json', 'w') as f:
         json.dump(teachers, f)
 
@@ -17,7 +17,7 @@ def add_new_description(name, description, rating, number = None):
         teachers = json.load(f)
         teachers[name]["feedback"].append(description)
         teachers[name]["ratings"].append(rating)
-        teachers[name]["number"].append(number)
+        teachers[name]["number"] = number
     with open('teachers.json', 'w') as f:
         json.dump(teachers, f)
 
@@ -35,4 +35,7 @@ def read_teacher(name):
     with open('teachers.json', 'r') as f:
         teachers = json.load(f)
         return teachers[name]
-    
+
+add_new_teacher('k3k', 'молодец', 10, 1337)
+add_new_description('k3k', 'ууу((', -10, 1337)
+print(read_teacher(find_teacher('k')[0]))
