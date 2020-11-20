@@ -8,7 +8,7 @@ def make_inline_keyboard(tuples):
     return InlineKeyboardMarkup([
         [InlineKeyboardButton(text, callback_data=data) for text, data in row]
         for row in tuples
-    ])
+    ], )
 
 
 def get_main_keyboard(context):

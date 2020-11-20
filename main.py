@@ -1,5 +1,5 @@
 import logging
-from constants import State, CallbackQueryAnswer
+from states import State
 import translations as tr
 from translations import gettext as _
 from config import token
