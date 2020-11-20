@@ -34,6 +34,8 @@ def find_teacher(st):
 def read_teacher(name):
     with open('teachers.json', 'r') as f:
         teachers = json.load(f)
+        if name not in teachers.keys():
+            return None
         return teachers[name]
 
 add_new_teacher('k3k', 'молодец', 10, 1337)

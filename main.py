@@ -2,6 +2,7 @@ import logging
 from states import State
 import translations as tr
 from translations import gettext as _
+import bd_worker
 
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
@@ -25,7 +26,7 @@ def start(update: Update, context: CallbackContext):
     reply_keyboard = [[_(tr.HELLO, context)],
                       ['Обратиться в центр качества образования',
                        'Нужна помощь с предметом?'],
-                      ['Отзыв о преподователе']]
+                      [_(tr.REVIEW, context)]]
     update.message.reply_text(update.message.text,
                               reply_markup=ReplyKeyboardMarkup(
                                   reply_keyboard, one_time_keyboard=True
@@ -34,11 +35,20 @@ def start(update: Update, context: CallbackContext):
 
 
 def read_msg(update: Update, context: CallbackContext):
-    print(update.message.text)
+    if update.message.text=='Добавить':
+        return State.ADD_T
+    elif update.message.text=='Читать':
+        return State.READ_T
+    return None
 
+def add_t(update: Update, context: CallbackContext):
+    pass
+
+def read_t(update: Update, context: CallbackContext):
+    update.message.reply_text(bd_worker.find_teacher(update.message.text)[0])
 
 def first_node(update: Update, context: CallbackContext):
-    if update.message.text == _(tr.HELLO, context):
+    if update.message.text == _(tr.REVIEW, context):
         reply_keyboard = [['Читать', 'Добавить']]
         update.message.reply_text('Вы хотите прочитать или добавить?', )
         update.message.reply_text(update.message.text,
@@ -46,6 +56,7 @@ def first_node(update: Update, context: CallbackContext):
                                       reply_keyboard, one_time_keyboard=True
                                   ))
         return State.REVIEW
+
 
 
 def main():
@@ -58,7 +69,8 @@ def main():
         entry_points=[CommandHandler('start', start)],
         states={
             State.FIRST_NODE: [MessageHandler(Filters.text, first_node)],
-            State.REVIEW: [MessageHandler(Filters.text, read_msg)]
+            State.REVIEW: [MessageHandler(Filters.text, read_msg)],
+            State.ADD_T: [MessageHandler(Filters.text, read_msg)]
         },
         fallbacks=[],
     )
