@@ -1,4 +1,5 @@
 import logging
+from states import State
 
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
@@ -42,7 +43,7 @@ def alarm(context):
     job = context.job
     context.bot.send_message(job.context, text='Beep!')
 
-    
+
 def remove_job_if_exists(name, context):
     """Remove job with given name. Returns whether job was removed."""
     current_jobs = context.job_queue.get_jobs_by_name(name)
@@ -98,13 +99,16 @@ def main():
     from config import token
     updater = Updater(token, use_context=True)
 
-    # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
 
-    # on different commands - answer in Telegram
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help_command))
-    dispatcher.add_handler(CommandHandler("keyboard", keyboard))
+    dispatcher.add_handler()
+    main_conv = ConversationHandler(
+        entry_points=[CommandHandler('start', start)],
+        states={
+            State.FIRST_NODE: CommandHandler("keyboard", keyboard)
+        },
+        fallbacks=[],
+    )
 
     # on noncommand i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, read_msg))
