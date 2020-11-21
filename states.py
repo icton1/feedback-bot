@@ -11,3 +11,4 @@ class State(Enum):
     HELP_MATCHING = auto()
     HELP_MATCHED = auto()
     ADD_T = auto()
+    READ_T = auto()

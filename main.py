@@ -4,6 +4,7 @@ import translations as tr
 from translations import gettext as _
 from config import token
 import learning_help
+import teachers_review
 import keyboard_utils
 import bd_worker
 
@@ -37,18 +38,7 @@ def start(update: Update, context: CallbackContext):
     return State.FIRST_NODE
 
 
-def read_msg(update: Update, context: CallbackContext):
-    if update.message.text=='Добавить':
-        return State.ADD_T
-    elif update.message.text=='Читать':
-        return State.READ_T
-    return None
 
-def add_t(update: Update, context: CallbackContext):
-    pass
-
-def read_t(update: Update, context: CallbackContext):
-    update.message.reply_text(bd_worker.find_teacher(update.message.text)[0])
 
 def first_node(update: Update, context: CallbackContext):
     if update.message.text == _(tr.REVIEW, context):
@@ -73,9 +63,8 @@ def main():
         entry_points=[CommandHandler('start', start)],
         states={
             State.FIRST_NODE: [MessageHandler(Filters.text, first_node)],
-            State.REVIEW: [MessageHandler(Filters.text, read_msg)],
-            State.ADD_T: [MessageHandler(Filters.text, read_msg)],
             **learning_help.get_states(),
+            **teachers_review.get_states()
         },
         fallbacks=[],
     )
