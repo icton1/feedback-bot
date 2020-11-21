@@ -42,7 +42,11 @@ def start(update: Update, context: CallbackContext):
 
 
 def add_t(update: Update, context: CallbackContext):
-    context.user_data['teacher_name'] = update.message.text
+    teachers = bd_worker.find_teachers(update.message.text)
+    if teachers!=[]:
+        context.user_data['teacher_name'] = update.message.text
+        context.user_data[TEACHERS_KEYBOARD] = get_teachers_keyboards(teachers)
+        show_teachers(update.message.reply_text, context)
     update.message.reply_text("Оставьте отзыв о преподователе")
     return State.ADD_DESC
 
