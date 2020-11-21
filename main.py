@@ -74,8 +74,7 @@ def main():
         states={
             State.FIRST_NODE: [MessageHandler(Filters.text, first_node)],
             State.REVIEW: [MessageHandler(Filters.text, read_msg)],
-            State.ADD_T: [MessageHandler(Filters.text, read_msg)]
-            State.REVIEW: [MessageHandler(Filters.text, read_msg)],
+            State.ADD_T: [MessageHandler(Filters.text, read_msg)],
             **learning_help.get_states(),
         },
         fallbacks=[],
