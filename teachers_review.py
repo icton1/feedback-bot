@@ -27,7 +27,7 @@ def add_t(update: Update, context: CallbackContext):
 
 
 def read_t(update: Update, context: CallbackContext):
-    teachers = bd_worker.find_teacher(update.message.text)
+    teachers = bd_worker.find_teachers(update.message.text)
     if len(teachers) == 0:
         update.message.reply_text('Такого преподователя не найдено')
     elif len(teachers) > 1:
@@ -35,8 +35,8 @@ def read_t(update: Update, context: CallbackContext):
         update.message.reply_text('Найдено {} преподователей. Кто вас интересует?'.format(len(teachers)))
         update.message.reply_text('\n'.join(teachers))
     else:
-        teacher = bd_worker.read_teacher(bd_worker.find_teacher(teachers[0])[0])
-        msg = str(bd_worker.find_teacher(teachers[0])[0]) + '\nОтзывы: ' + '\n***\n'.join(teacher["feedback"]) + '\nРейтинг: ' + str(sum(teacher["ratings"])/len(teacher["ratings"]))
+        teacher = bd_worker.read_teacher(bd_worker.find_teachers(teachers[0])[0])
+        msg = str(bd_worker.find_teachers(teachers[0])[0]) + '\nОтзывы: ' + '\n***\n'.join(teacher["feedback"]) + '\nРейтинг: ' + str(sum(teacher["ratings"]) / len(teacher["ratings"]))
         #print(msg)
         update.message.reply_text(msg)
 

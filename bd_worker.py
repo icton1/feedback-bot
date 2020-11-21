@@ -26,7 +26,7 @@ def add_new_description(name, description ='', rating = -1, number = None):
         json.dump(teachers, f)
 
 
-def find_teacher(st):
+def find_teachers(st):
     with open('teachers.json', 'r') as f:
         ret = []
         teachers = json.load(f)
