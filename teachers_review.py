@@ -66,13 +66,14 @@ def get_teachers_keyboards(teachers):
         if i + 4 < len(rows):
             row.append(['>>> Дальше', Answers.FORWARD])
         keyboards[-1].append(row)
-    return [make_inline_keyboard(k) for k in keyboards]
+    return keyboards
 
 
 def show_teachers(set_message, context):
     teachers_keyboard = context.user_data[TEACHERS_KEYBOARD]
     i = context.user_data.get(TEACHERS_INDEX, 0)
-    set_message(text="", reply_markup=teachers_keyboard)
+    keyboard = teachers_keyboard[i]
+    set_message(text="Учителя:", reply_markup=make_inline_keyboard(keyboard))
 
 
 def show_teacher_feedback(reply, teacher_name):
@@ -140,7 +141,7 @@ def get_states():
         State.REVIEW: [MessageHandler(Filters.text, start)],
         State.ADD_T: [MessageHandler(Filters.text, add_t)],
         State.READ_T: [MessageHandler(Filters.text, read_t)],
-        State.READ_T_INLINE: [MessageHandler(Filters.text, read_t_inline)],
+        State.READ_T_INLINE: [CallbackQueryHandler(read_t_inline)],
         State.ADD_DESC: [MessageHandler(Filters.text, add_desc)],
         State.ADD_RATING: [MessageHandler(Filters.text, add_rating)],
     }
