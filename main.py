@@ -39,7 +39,7 @@ def show_change_lang_prompt(reply, context):
 
 def first_node(update: Update, context: CallbackContext):
     if update.message.text == _(tr.REVIEW, context):
-        reply_keyboard = [['Читать', 'Добавить']]
+        reply_keyboard = [[_(tr.REVIEW_READ, context), _(tr.REVIEW_ADD, context)], ['Назад']]
         update.message.reply_text('Вы хотите прочитать или добавить?', )
         update.message.reply_text(update.message.text,
                                   reply_markup=ReplyKeyboardMarkup(
