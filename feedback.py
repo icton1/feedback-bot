@@ -6,15 +6,8 @@ import utils
 from states import State
 import os
 import os.path
-
-
-STRING_POLLS = [
-    ['Вопрос0', ['Варианты0', 'ответов0']],
-    ['Вопрос1', ['Варианты1', 'ответов1']],
-    ['Вопрос2', ['Варианты2', 'ответов2']],
-    ['Вопрос3', ['Варианты3', 'ответов3']],
-    ['Вопрос4', ['Варианты4', 'ответов4']],
-]
+import translations as tr
+from translations import gettext as _
 
 POLL_INDEX = 'POLL_INDEX'
 ANSWERS = 'ANSWERS'
@@ -41,26 +34,32 @@ class AnonymousPoll:
         return data, reply
 
 
-POLLS = [AnonymousPoll(*poll) for poll in STRING_POLLS]
+POLLS = {
+    lang: [AnonymousPoll(*poll) for poll in polls]
+    for lang, polls in tr.STRING_POLLS.items()
+}
 
 
 def any_comments_prompt(reply, context):
     reply_keyboard = utils.make_inline_keyboard(
-        [[['Да', 'True'], ['Нет', 'False']]]
+        [[[_(tr.YES, context), 'True'], [_(tr.NO, context), 'False']]]
     )
-    reply(text='Добавите коммент?', reply_markup=reply_keyboard)
+    reply(text=_(tr.WANT_ENTER_POLL_COMMENT, context),
+          reply_markup=reply_keyboard)
 
 
 def process_polls(update, context):
+    lang = context.user_data.get('lang', 'ru')
     if POLL_INDEX not in context.user_data.keys():
         context.user_data[ANSWERS] = []
         context.user_data[POLL_INDEX] = 0
-        POLLS[0].send_poll(update.effective_user.send_message)
+        POLLS[lang][0].send_poll(update.effective_user.send_message)
         return State.FDBK_POLLS
 
     poll_index = context.user_data[POLL_INDEX]
-    poll = POLLS[poll_index]
-    next_poll = POLLS[poll_index + 1] if poll_index + 1 < len(POLLS) else None
+    poll = POLLS[lang][poll_index]
+    next_poll = POLLS[lang][poll_index + 1] \
+        if poll_index + 1 < len(POLLS[lang]) else None
 
     answer, reply = poll.get_results_then_next(update, context, next_poll)
     context.user_data[ANSWERS].append(answer)
@@ -77,10 +76,10 @@ def start(update, context):
     return process_polls(update, context)
 
 
-def save_to_csv(answer):
+def save_to_csv(lang, answer):
     os.makedirs('csv', exist_ok=True)
     if not os.path.isfile('csv/table.csv'):
-        headers = [f'ans{i}' for i in range(len(POLLS))] + ['comment']
+        headers = [f'ans{i}' for i in range(len(POLLS[lang]))] + ['comment']
         with open('csv/table.csv', 'w') as f:
             f.write(','.join(headers))
             f.write(os.linesep)
@@ -92,8 +91,8 @@ def save_to_csv(answer):
 
 def finish(send_first, send_second, context):
     answer = context.user_data[ANSWERS] + [context.user_data[ANSWER_COMMENT]]
-    save_to_csv(answer)
-    send_first('Спасибо за ваш ответ!')
+    save_to_csv(context.user_data.get('lang', 'ru'), answer)
+    send_first(_(tr.FEEDBACK_FINAL_PHRASE, context))
     utils.main_reply(send_second, context)
     return State.FIRST_NODE
 
@@ -101,7 +100,7 @@ def finish(send_first, send_second, context):
 def ask_comments(update, context):
     data, reply = utils.answer_query(update, context)
     if data == 'True':
-        reply('Пожалуйста, введите комментарий')
+        reply(_(tr.PLEASE_ENTER_POLL_COMMENT, context))
         return State.FDBK_POLLS_GET_COMMENTS
     else:
         context.user_data[ANSWER_COMMENT] = ''
