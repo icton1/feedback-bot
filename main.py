@@ -51,6 +51,8 @@ def first_node(update: Update, context: CallbackContext):
         return State.REVIEW
     elif update.message.text == _(tr.HELP_WITH_LEARNING, context):
         return learning_help.start(update, context)
+    elif len(update.message.text)>0 and update.message.text[-1]=='?':
+        update.message.reply_text(_(tr.PASTA_STUDOFIS, context))
 
 
 def main():
