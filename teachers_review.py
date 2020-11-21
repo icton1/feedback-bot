@@ -14,8 +14,8 @@ from states import State
 TEACHERS_KEYBOARD = 'TEACHERS_LIST'
 TEACHERS_INDEX = 'TEACHERS_LIST_INDEX'
 MAX_INLINE_CHARACTERS = 80
-MAX_INLINE_COLUMNS = 3
-MAX_INLINE_ROWS = 5
+MAX_INLINE_COLUMNS = 1
+MAX_INLINE_ROWS = 4
 
 
 class Answers:
@@ -51,19 +51,20 @@ def get_teachers_keyboards(teachers):
     rows = [[]]
     last_len = 0
     for t in teachers:
-        if last_len + len(t) > MAX_INLINE_CHARACTERS \
-                or len(rows[-1]) + 1 > MAX_INLINE_COLUMNS:
+        if (last_len + len(t) > MAX_INLINE_CHARACTERS
+            or len(rows[-1]) + 1 > MAX_INLINE_COLUMNS) \
+                and len(rows[-1]) != 0:
             rows.append([])
         rows[-1].append([t, t])
     keyboards = []
-    for i in range(0, len(rows), 4):
-        keyboards.append(rows[i:i + 4])
+    for i in range(0, len(rows), MAX_INLINE_ROWS - 1):
+        keyboards.append(rows[i:i + MAX_INLINE_ROWS - 1])
         row = [
-            ['написать заново', Answers.TYPE_AGAIN]
+            ['Написать заново', Answers.TYPE_AGAIN]
         ]
         if i > 0:
             row.append(['<<< Назад', Answers.BACK])
-        if i + 4 < len(rows):
+        if i + MAX_INLINE_ROWS - 1 < len(rows):
             row.append(['>>> Дальше', Answers.FORWARD])
         keyboards[-1].append(row)
     return keyboards
@@ -71,7 +72,7 @@ def get_teachers_keyboards(teachers):
 
 def show_teachers(set_message, context):
     teachers_keyboard = context.user_data[TEACHERS_KEYBOARD]
-    i = context.user_data.get(TEACHERS_INDEX, 0)
+    i = context.user_data.setdefault(TEACHERS_INDEX, 0)
     keyboard = teachers_keyboard[i]
     set_message(text="Учителя:", reply_markup=make_inline_keyboard(keyboard))
 
@@ -103,16 +104,20 @@ def read_t_inline(update, context):
 
     if data == Answers.FORWARD:
         context.user_data[TEACHERS_INDEX] += 1
+        show_teachers(reply, context)
         return None
     elif data == Answers.BACK:
         context.user_data[TEACHERS_INDEX] -= 1
+        show_teachers(reply, context)
         return None
     elif data == Answers.TYPE_AGAIN:
+        del context.user_data[TEACHERS_INDEX]
         reply("Начните вводить имя преподователя")
         return State.READ_T
     else:
+        del context.user_data[TEACHERS_INDEX]
         show_teacher_feedback(reply, data)
-        main_reply(update.message.reply_text, context)
+        main_reply(update.effective_user.send_message, context)
         return State.FIRST_NODE
 
 
