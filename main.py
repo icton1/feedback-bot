@@ -2,11 +2,10 @@ import logging
 from states import State
 import translations as tr
 from translations import gettext as _
-from config import token
 import learning_help
 import teachers_review
+import feedback
 import utils
-import bd_worker
 
 from telegram import Update, ReplyKeyboardMarkup, Message
 from telegram.ext import (
@@ -15,8 +14,10 @@ from telegram.ext import (
     MessageHandler,
     Filters,
     ConversationHandler,
-    CallbackContext, CallbackQueryHandler,
+    CallbackContext, CallbackQueryHandler, PollAnswerHandler,
 )
+
+POLL_STATE = 'POLL_STATE'
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -38,7 +39,8 @@ def show_change_lang_prompt(reply, context):
 
 
 def first_node(update: Update, context: CallbackContext):
-    if update.message.text == _(tr.REVIEW, context):
+    text = update.message.text
+    if text == _(tr.REVIEW, context):
         reply_keyboard = [[_(tr.REVIEW_READ, context), _(tr.REVIEW_ADD, context)], ['Назад']]
         update.message.reply_text('Вы хотите прочитать или добавить?', )
         update.message.reply_text(update.message.text,
@@ -46,12 +48,14 @@ def first_node(update: Update, context: CallbackContext):
                                       reply_keyboard, one_time_keyboard=True
                                   ))
         return State.REVIEW
-    elif update.message.text == _(tr.HELP_WITH_LEARNING, context):
+    elif text == _(tr.HELP_WITH_LEARNING, context):
         return learning_help.start(update, context)
-    elif update.message.text == _(tr.CHANGE_LANG, context):
+    elif text == _(tr.CHANGE_LANG, context):
         show_change_lang_prompt(update.effective_user.send_message, context)
         return State.CHANGE_LANG
-    elif len(update.message.text)>0 and update.message.text[-1]=='?':
+    elif text == _(tr.SEND_FEEDBACK, context):
+        return feedback.start(update, context)
+    elif len(text) > 0 and text[-1] == '?':
         update.message.reply_text(_(tr.PASTA_STUDOFIS, context))
 
 
@@ -75,9 +79,10 @@ def main():
             State.FIRST_NODE: [MessageHandler(Filters.text, first_node)],
             State.CHANGE_LANG: [CallbackQueryHandler(choose_lang)],
             **learning_help.get_states(),
-            **teachers_review.get_states()
+            **teachers_review.get_states(),
+            **feedback.get_states()
         },
-        fallbacks=[],
+        fallbacks=[]
     )
 
     dispatcher.add_handler(main_conv)

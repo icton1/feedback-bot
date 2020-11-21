@@ -11,6 +11,12 @@ class State(Enum):
     ADD_DESC = auto()
     ADD_RATING = auto()
 
+    FDBK_GOT_SUBJECT = auto()
+    FDBK_GOT_TEACHER = auto()
+    FDBK_POLLS = auto()
+    FDBK_POLLS_ASK_COMMENTS = auto()
+    FDBK_POLLS_GET_COMMENTS = auto()
+
     HELP_CHOSE_SUBJECT = auto()
     HELP_CHOSE_SUBJECT_OTHER = auto()
     HELP_CHOSE_TYPE = auto()

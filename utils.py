@@ -4,16 +4,16 @@ import translations as tr
 from translations import gettext as _
 
 
-def make_inline_keyboard(tuples):
+def make_inline_keyboard(rows):
     return InlineKeyboardMarkup([
         [InlineKeyboardButton(text, callback_data=data) for text, data in row]
-        for row in tuples
-    ], )
+        for row in rows
+    ])
 
 
 def get_main_keyboard(context):
     reply_keyboard = [[_(tr.HELLO, context)],
-                      ['Обратиться в центр качества образования',
+                      [_(tr.SEND_FEEDBACK, context),
                        _(tr.CHANGE_LANG, context)],
                       [_(tr.REVIEW, context)]]
     return ReplyKeyboardMarkup(
