@@ -70,7 +70,7 @@ def main():
     dispatcher = updater.dispatcher
 
     main_conv = ConversationHandler(
-        entry_points=[CommandHandler('start', start)],
+        entry_points=[MessageHandler(Filters.text, start)],
         states={
             State.FIRST_NODE: [MessageHandler(Filters.text, first_node)],
             State.CHANGE_LANG: [CallbackQueryHandler(choose_lang)],
