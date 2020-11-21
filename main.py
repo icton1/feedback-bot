@@ -33,14 +33,14 @@ def start(update: Update, context: CallbackContext):
 
 def show_change_lang_prompt(reply, context):
     reply_keyboard = [[['Русский', 'ru'], ['Newru', 'newru']]]
-    reply('Выберите язык',
+    reply(_(tr.SELECT_LANG, context),
           reply_markup=utils.make_inline_keyboard(reply_keyboard))
 
 
 def first_node(update: Update, context: CallbackContext):
     if update.message.text == _(tr.REVIEW, context):
-        reply_keyboard = [[_(tr.REVIEW_READ, context), _(tr.REVIEW_ADD, context)], ['Назад']]
-        update.message.reply_text('Вы хотите прочитать или добавить?', )
+        reply_keyboard = [[_(tr.REVIEW_READ, context), _(tr.REVIEW_ADD, context)], [_(tr.BACK)]]
+        update.message.reply_text(_(tr.READ_OR_ADD, context), )
         update.message.reply_text(update.message.text,
                                   reply_markup=ReplyKeyboardMarkup(
                                       reply_keyboard, one_time_keyboard=True

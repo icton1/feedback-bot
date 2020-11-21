@@ -26,18 +26,18 @@ class Answers:
 
 
 def start(update: Update, context: CallbackContext):
-    reply_keyboard = [['Назад']]
+    reply_keyboard = [[_(tr.BACK, context)]]
     if update.message.text == _(tr.REVIEW_ADD, context):
-        update.message.reply_text("Введите название предмета", reply_markup=ReplyKeyboardMarkup(
+        update.message.reply_text(_(tr.INPUT_SUBJ_NAME, context), reply_markup=ReplyKeyboardMarkup(
                                       reply_keyboard, one_time_keyboard=True
                                   ))
         return State.ADD_TO_SUBJECT
     elif update.message.text == _(tr.REVIEW_READ, context):
-        update.message.reply_text("Введите название предмета", reply_markup=ReplyKeyboardMarkup(
+        update.message.reply_text(_(tr.INPUT_SUBJ_NAME, context), reply_markup=ReplyKeyboardMarkup(
                                       reply_keyboard, one_time_keyboard=True
                                   ))
         return State.READ_FROM_SUBJECT
-    elif update.message.text == 'Назад':
+    elif update.message.text == _(tr.BACK, context):
         main_reply(update.message.reply_text, context)
         return State.FIRST_NODE
     return None
@@ -45,14 +45,14 @@ def start(update: Update, context: CallbackContext):
 
 def read_from_subject(update: Update, context: CallbackContext):
     subj = update.message.text
-    if subj == 'Назад':
+    if subj == _(tr.BACK, context):
         main_reply(update.message.reply_text, context)
         return State.FIRST_NODE
     # TODO inline!!!
     print(bd_worker.read_subject(subj))
     if bd_worker.is_subject_exist(subj):
         context.user_data['subject'] = subj
-        update.message.reply_text("Начните вводить имя преподователя")
+        update.message.reply_text(_(tr.START_INPUTING_NAMES, context))
         return State.READ_T
     else:
         update.message.reply_text(
@@ -61,13 +61,13 @@ def read_from_subject(update: Update, context: CallbackContext):
 
 def add_to_subject(update: Update, context: CallbackContext):
     subj = update.message.text
-    if subj == 'Назад':
+    if subj == _(tr.BACK, context):
         main_reply(update.message.reply_text, context)
         return State.FIRST_NODE
     # TODO inline!!!
     if bd_worker.is_subject_exist(subj):
         context.user_data['subject'] = subj
-        update.message.reply_text("Введите ФИО преподователя")
+        update.message.reply_text(_(tr.INPUT_FIO, context))
         return State.ADD_T
     else:
         update.message.reply_text(
@@ -78,8 +78,8 @@ def add_t(update: Update, context: CallbackContext):
     teachers = bd_worker.find_teachers(context.user_data['subject'], update.message.text)
     if teachers:
         context.user_data['teacher_name'] = update.message.text
-        print(get_teachers_keyboards(teachers))
-        context.user_data[TEACHERS_KEYBOARD] = [get_teachers_keyboards(teachers)[0][:-1]]
+        print(get_teachers_keyboards(teachers, context))
+        context.user_data[TEACHERS_KEYBOARD] = [get_teachers_keyboards(teachers, context)[0][:-1]]
         print(context.user_data[TEACHERS_KEYBOARD])
         context.user_data[TEACHERS_KEYBOARD][0].append([['Нет в списке?', 'NOT_IN_LIST']])
         print(context.user_data[TEACHERS_KEYBOARD])
@@ -87,29 +87,29 @@ def add_t(update: Update, context: CallbackContext):
         return State.ADD_T_INLINE
     else:
         context.user_data['teacher_name'] = update.message.text
-        update.message.reply_text("Оставьте отзыв о преподователе")
+        update.message.reply_text(_(tr.OTZYV, context))
         return State.ADD_DESC
 
 
 def addictional_add(update, context):
     context.user_data['teacher_name'] = update.message.text
-    update.message.reply_text("Оставьте отзыв о преподователе")
+    update.message.reply_text(_(tr.OTZYV, context))
     return State.ADD_DESC
 
 
 def add_t_inline(update, context):
     data, reply = answer_query(update, context)
     if data == Answers.NOT_IN_LIST:
-        reply("Введите полное ФИО")
+        reply(_(tr.INPUT_ALL_FIO, context))
         return State.ADDICTIONAL_ADD
     else:
         print(data)
         context.user_data['teacher_name'] = data
-        reply("Оставьте отзыв о преподователе")
+        reply(_(tr.OTZYV, context))
         return State.ADD_DESC
 
 
-def get_teachers_keyboards(teachers):
+def get_teachers_keyboards(teachers, context):
     rows = [[]]
     last_len = 0
     for t in teachers:
@@ -122,7 +122,7 @@ def get_teachers_keyboards(teachers):
     for i in range(0, len(rows), MAX_INLINE_ROWS - 1):
         keyboards.append(rows[i:i + MAX_INLINE_ROWS - 1])
         row = [
-            ['Написать заново', Answers.TYPE_AGAIN]
+            [_(tr.WRITE_ONE_MORE, context), Answers.TYPE_AGAIN]
         ]
         if i > 0:
             row.append(['<<< Назад', Answers.BACK])
@@ -151,7 +151,7 @@ def read_t(update: Update, context: CallbackContext):
     if len(teachers) == 0:
         update.message.reply_text('Такого преподователя не найдено')
     elif len(teachers) > 1:
-        context.user_data[TEACHERS_KEYBOARD] = get_teachers_keyboards(teachers)
+        context.user_data[TEACHERS_KEYBOARD] = get_teachers_keyboards(teachers, context)
         show_teachers(update.message.reply_text, context)
         return State.READ_T_INLINE
     else:
