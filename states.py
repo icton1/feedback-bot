@@ -3,6 +3,7 @@ from enum import Enum, auto
 
 class State(Enum):
     FIRST_NODE = auto()
+    CHANGE_LANG = auto()
     REVIEW = auto()
     ADD_T = auto()
     READ_T = auto()

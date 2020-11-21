@@ -7,7 +7,7 @@ import translations
 import bd_worker
 import translations as tr
 from translations import gettext as _
-from keyboard_utils import make_inline_keyboard, main_reply
+from utils import make_inline_keyboard, main_reply, answer_query
 
 from states import State
 
@@ -25,13 +25,6 @@ class Answers:
     BACK = 'BACK'
 
 
-def answer_query(update, context):
-    query: CallbackQuery = update.callback_query
-    data = query.data
-    query.answer()
-    return data, query.edit_message_text
-
-
 def start(update: Update, context: CallbackContext):
     if update.message.text == _(tr.REVIEW_ADD, context):
         update.message.reply_text("Введите ФИО преподователя")
@@ -39,6 +32,9 @@ def start(update: Update, context: CallbackContext):
     elif update.message.text == _(tr.REVIEW_READ, context):
         update.message.reply_text("Начните вводить имя преподователя")
         return State.READ_T
+    elif update.message.text == 'Назад':
+        main_reply(update.message.reply_text, context)
+        return State.FIRST_NODE
     return None
 
 
