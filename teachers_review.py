@@ -146,7 +146,8 @@ def add_to_subject(update: Update, context: CallbackContext):
 
 
 def add_t(update: Update, context: CallbackContext):
-    teachers = bd_worker.find_teachers(context.user_data['subject'], update.message.text)
+    teachers = bd_worker.find_teachers(context.user_data['subject'],
+                                       update.message.text)
     if teachers:
         context.user_data['teacher_name'] = update.message.text
         save_teachers_keyboards(teachers, context)
@@ -189,7 +190,8 @@ def show_teacher_feedback(reply, teacher_name, context):
 
 
 def read_t(update: Update, context: CallbackContext):
-    teachers = bd_worker.find_teachers(context.user_data['subject'], update.message.text)
+    teachers = bd_worker.find_teachers(context.user_data['subject'],
+                                       update.message.text)
     if len(teachers) == 0:
         update.message.reply_text(_(tr.TEACHER_NOT_FOUND, context))
     elif len(teachers) > 1:
@@ -225,7 +227,8 @@ def add_desc(update: Update, context: CallbackContext):
 def add_rating(update: Update, context: CallbackContext):
     if update.message.text.isnumeric() and 0 <= int(update.message.text) <= 10:
         context.user_data['teacher_rating'] = update.message.text
-        teacher = bd_worker.read_teacher(context.user_data['subject'], context.user_data['teacher_name'])
+        teacher = bd_worker.read_teacher(context.user_data['subject'],
+                                         context.user_data['teacher_name'])
         if not teacher:
             bd_worker.add_new_teacher(context.user_data['subject'],
                                       context.user_data['teacher_name'],
@@ -247,14 +250,17 @@ def add_rating(update: Update, context: CallbackContext):
 
 def get_states():
     return {
-        State.ADDICTIONAL_ADD: [MessageHandler(Filters.text & ~Filters.command, addictional_add)],
+        State.ADDICTIONAL_ADD: [MessageHandler(Filters.text & ~Filters.command,
+                                               addictional_add)],
         State.REVIEW: [MessageHandler(Filters.text & ~Filters.command, start)],
         State.ADD_T: [MessageHandler(Filters.text & ~Filters.command, add_t)],
         State.READ_T: [MessageHandler(Filters.text & ~Filters.command, read_t)],
         State.READ_T_INLINE: [CallbackQueryHandler(read_t_inline)],
         State.ADD_T_INLINE: [CallbackQueryHandler(add_t_inline)],
-        State.ADD_DESC: [MessageHandler(Filters.text & ~Filters.command, add_desc)],
-        State.ADD_RATING: [MessageHandler(Filters.text & ~Filters.command, add_rating)],
+        State.ADD_DESC: [MessageHandler(Filters.text & ~Filters.command,
+                                        add_desc)],
+        State.ADD_RATING: [MessageHandler(Filters.text & ~Filters.command,
+                                          add_rating)],
         State.READ_FROM_SUBJECT: [CallbackQueryHandler(read_from_subject)],
         State.ADD_TO_SUBJECT: [CallbackQueryHandler(add_to_subject)],
     }
