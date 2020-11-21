@@ -27,7 +27,8 @@ def find_teacher(st):
         ret = []
         teachers = json.load(f)
         for i in teachers.keys():
-            if st in i or st in teachers[i]['number']:
+            print(i)
+            if st in i or st in str(teachers[i]['number']):
                 ret.append(i)
         return ret
 
@@ -38,6 +39,3 @@ def read_teacher(name):
             return None
         return teachers[name]
 
-add_new_teacher('k3k', 'молодец', 10, 1337)
-add_new_description('k3k', 'ууу((', -10, 1337)
-print(read_teacher(find_teacher('k')[0]))
