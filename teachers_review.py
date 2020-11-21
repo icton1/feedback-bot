@@ -81,7 +81,7 @@ def add_t(update: Update, context: CallbackContext):
         print(get_teachers_keyboards(teachers, context))
         context.user_data[TEACHERS_KEYBOARD] = [get_teachers_keyboards(teachers, context)[0][:-1]]
         print(context.user_data[TEACHERS_KEYBOARD])
-        context.user_data[TEACHERS_KEYBOARD][0].append([['Нет в списке?', 'NOT_IN_LIST']])
+        context.user_data[TEACHERS_KEYBOARD][0].append([[_(tr.NOT_IN_LIST, context), 'NOT_IN_LIST']])
         print(context.user_data[TEACHERS_KEYBOARD])
         show_teachers(update.message.reply_text, context)
         return State.ADD_T_INLINE
@@ -149,7 +149,7 @@ def show_teacher_feedback(reply, teacher_name, context):
 def read_t(update: Update, context: CallbackContext):
     teachers = bd_worker.find_teachers(context.user_data['subject'], update.message.text)
     if len(teachers) == 0:
-        update.message.reply_text('Такого преподователя не найдено')
+        update.message.reply_text(_(tr.TEACHER_NOT_FOUND, context))
     elif len(teachers) > 1:
         context.user_data[TEACHERS_KEYBOARD] = get_teachers_keyboards(teachers, context)
         show_teachers(update.message.reply_text, context)
@@ -173,7 +173,7 @@ def read_t_inline(update, context):
         return None
     elif data == Answers.TYPE_AGAIN:
         del context.user_data[TEACHERS_INDEX]
-        reply("Начните вводить имя преподователя")
+        reply(_(tr.START_INPUTING_NAMES, context))
         return State.READ_T
     else:
         del context.user_data[TEACHERS_INDEX]
@@ -184,7 +184,7 @@ def read_t_inline(update, context):
 
 def add_desc(update: Update, context: CallbackContext):
     context.user_data['teacher_desc'] = update.message.text
-    update.message.reply_text("Как вы оцените преподователя? (из 10)")
+    update.message.reply_text(_(tr.HOW_REVIEW_TEACHER, context))
     return State.ADD_RATING
 
 
@@ -202,12 +202,12 @@ def add_rating(update: Update, context: CallbackContext):
                                           context.user_data['teacher_name'],
                                           context.user_data['teacher_desc'],
                                           context.user_data['teacher_rating'])
-        update.message.reply_text("Ответ успешно записан")
+        update.message.reply_text(_(tr.EXCELLENT, context))
         main_reply(update.message.reply_text, context)
         return State.FIRST_NODE
     else:
         update.message.reply_text(
-            'Неправильный рейтинг, выберите число от 0 до 10')
+            _(tr.WRONG_RATING, context))
         return None
 
 
