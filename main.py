@@ -28,8 +28,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def hello(update, context):
+    update.effective_user.send_message(_(tr.HELLO_TEXT, context))
+
+
 def start(update: Update, context: CallbackContext):
-    utils.main_reply(update.message.reply_text, context)
+    hello(update, context)
     return State.FIRST_NODE
 
 
@@ -44,15 +48,16 @@ def first_node(update: Update, context: CallbackContext):
     if text == _(tr.REVIEW, context):
         reply_keyboard = [[_(tr.REVIEW_READ, context),
                            _(tr.REVIEW_ADD, context)],
-                          [_(tr.BACK)]]
+                          [_(tr.BACK, context)]]
         update.message.reply_text(_(tr.READ_OR_ADD, context))
         update.message.reply_text(update.message.text,
                                   reply_markup=ReplyKeyboardMarkup(
                                       reply_keyboard, one_time_keyboard=True
                                   ))
         return State.REVIEW
-    elif text == _(tr.HELP_WITH_LEARNING, context):
-        return learning_help.start(update, context)
+    elif text == _(tr.HELLO, context):
+        hello(update, context)
+        return
     elif text == _(tr.CHANGE_LANG, context):
         show_change_lang_prompt(update.effective_user.send_message, context)
         return State.CHANGE_LANG

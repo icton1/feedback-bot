@@ -2,6 +2,8 @@ HELLO = {'ru': 'Привет', 'newru': "ПрИвЕт!"}
 REVIEW = {'ru': 'Отзыв о преподователе', 'newru': "ОтзЫВ о ПрепоДОвАтелЕ"}
 CHANGE_LANG = {'ru': 'Поменять язык'}
 SEND_FEEDBACK = {'ru': 'Оставить обратную связь'}
+HELLO_TEXT = {'ru': 'Привет', 'newru': "ПрИвЕт!"}
+GOT_TO_MAIN_MENU = {'ru': 'Вы перешли в главное меню'}
 
 HELP_WITH_LEARNING = {'ru': 'Нужна помощь с предметом?'}
 CHOOSE_YOUR_SUBJECT = {'ru': 'Выберите предмет'}

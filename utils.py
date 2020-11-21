@@ -12,16 +12,18 @@ def make_inline_keyboard(rows):
 
 
 def get_main_keyboard(context):
-    reply_keyboard = [['Пройти опрос',
+    reply_keyboard = [[_(tr.HELLO, context),
                        _(tr.CHANGE_LANG, context)],
-                      [_(tr.REVIEW, context)]]
+                      [_(tr.SEND_FEEDBACK, context),
+                       _(tr.REVIEW, context)]]
     return ReplyKeyboardMarkup(
         reply_keyboard, one_time_keyboard=True
     )
 
 
 def main_reply(reply, context):
-    reply('Что вы хотите сделать?', reply_markup=get_main_keyboard(context))
+    reply(_(tr.GOT_TO_MAIN_MENU, context),
+          reply_markup=get_main_keyboard(context))
 
 
 def answer_query(update, context):
