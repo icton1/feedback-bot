@@ -44,7 +44,7 @@ def first_node(update: Update, context: CallbackContext):
     if text == _(tr.REVIEW, context):
         reply_keyboard = [[_(tr.REVIEW_READ, context),
                            _(tr.REVIEW_ADD, context)],
-                          [_(tr.BACK)]]
+                          [_(tr.BACK, context)]]
         update.message.reply_text(_(tr.READ_OR_ADD, context))
         update.message.reply_text(update.message.text,
                                   reply_markup=ReplyKeyboardMarkup(
