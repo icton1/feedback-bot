@@ -2,9 +2,12 @@ import logging
 from states import State
 import translations as tr
 from translations import gettext as _
+from config import token
+import learning_help
+import keyboard_utils
 import bd_worker
 
-from telegram import Update, ReplyKeyboardMarkup
+from telegram import Update, ReplyKeyboardMarkup, Message
 from telegram.ext import (
     Updater,
     CommandHandler,
@@ -56,7 +59,8 @@ def first_node(update: Update, context: CallbackContext):
                                       reply_keyboard, one_time_keyboard=True
                                   ))
         return State.REVIEW
-
+    elif update.message.text == _(tr.HELP_WITH_LEARNING, context):
+        return learning_help.start(update, context)
 
 
 def main():
@@ -71,6 +75,8 @@ def main():
             State.FIRST_NODE: [MessageHandler(Filters.text, first_node)],
             State.REVIEW: [MessageHandler(Filters.text, read_msg)],
             State.ADD_T: [MessageHandler(Filters.text, read_msg)]
+            State.REVIEW: [MessageHandler(Filters.text, read_msg)],
+            **learning_help.get_states(),
         },
         fallbacks=[],
     )
