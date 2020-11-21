@@ -213,14 +213,14 @@ def add_rating(update: Update, context: CallbackContext):
 
 def get_states():
     return {
-        State.ADDICTIONAL_ADD: [MessageHandler(Filters.text, addictional_add)],
-        State.REVIEW: [MessageHandler(Filters.text, start)],
-        State.ADD_T: [MessageHandler(Filters.text, add_t)],
-        State.READ_T: [MessageHandler(Filters.text, read_t)],
+        State.ADDICTIONAL_ADD: [MessageHandler(Filters.text & ~Filters.command, addictional_add)],
+        State.REVIEW: [MessageHandler(Filters.text & ~Filters.command, start)],
+        State.ADD_T: [MessageHandler(Filters.text & ~Filters.command, add_t)],
+        State.READ_T: [MessageHandler(Filters.text & ~Filters.command, read_t)],
         State.READ_T_INLINE: [CallbackQueryHandler(read_t_inline)],
         State.ADD_T_INLINE: [CallbackQueryHandler(add_t_inline)],
-        State.ADD_DESC: [MessageHandler(Filters.text, add_desc)],
-        State.ADD_RATING: [MessageHandler(Filters.text, add_rating)],
-        State.READ_FROM_SUBJECT: [MessageHandler(Filters.text, read_from_subject)],
-        State.ADD_TO_SUBJECT: [MessageHandler(Filters.text, add_to_subject)],
+        State.ADD_DESC: [MessageHandler(Filters.text & ~Filters.command, add_desc)],
+        State.ADD_RATING: [MessageHandler(Filters.text & ~Filters.command, add_rating)],
+        State.READ_FROM_SUBJECT: [MessageHandler(Filters.text & ~Filters.command, read_from_subject)],
+        State.ADD_TO_SUBJECT: [MessageHandler(Filters.text & ~Filters.command, add_to_subject)],
     }

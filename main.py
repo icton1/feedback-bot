@@ -72,12 +72,12 @@ def main():
     main_conv = ConversationHandler(
         entry_points=[MessageHandler(Filters.text, start)],
         states={
-            State.FIRST_NODE: [MessageHandler(Filters.text, first_node)],
+            State.FIRST_NODE: [MessageHandler(Filters.text & ~Filters.command, first_node)],
             State.CHANGE_LANG: [CallbackQueryHandler(choose_lang)],
             **learning_help.get_states(),
             **teachers_review.get_states()
         },
-        fallbacks=[],
+        fallbacks=[CommandHandler('stop', start)],
     )
 
     dispatcher.add_handler(main_conv)

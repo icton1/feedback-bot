@@ -12,8 +12,7 @@ def make_inline_keyboard(tuples):
 
 
 def get_main_keyboard(context):
-    reply_keyboard = [[_(tr.HELLO, context)],
-                      ['Обратиться в центр качества образования',
+    reply_keyboard = [['Пройти опрос',
                        _(tr.CHANGE_LANG, context)],
                       [_(tr.REVIEW, context)]]
     return ReplyKeyboardMarkup(
@@ -22,7 +21,7 @@ def get_main_keyboard(context):
 
 
 def main_reply(reply, context):
-    reply('Привет! Я бот!', reply_markup=get_main_keyboard(context))
+    reply('Что вы хотите сделать?', reply_markup=get_main_keyboard(context))
 
 
 def answer_query(update, context):

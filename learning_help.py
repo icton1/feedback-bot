@@ -173,17 +173,17 @@ def get_states():
     return {
         State.HELP_CHOSE_SUBJECT: [CallbackQueryHandler(chose_subject)],
         State.HELP_CHOSE_SUBJECT_OTHER: [
-            MessageHandler(Filters.text, chose_other_subject)
+            MessageHandler(Filters.text & ~Filters.command, chose_other_subject)
         ],
         State.HELP_CHOSE_TYPE: [CallbackQueryHandler(chose_type)],
         State.HELP_CHOSE_AWARD: [
-            MessageHandler(Filters.text, chose_description)
+            MessageHandler(Filters.text & ~Filters.command, chose_description)
         ],
         State.HELP_CHOSE_DESCRIPTION: [
-            MessageHandler(Filters.text, chose_award)
+            MessageHandler(Filters.text & ~Filters.command, chose_award)
         ],
         State.HELP_CHECKING_REQUEST: [
-            MessageHandler(Filters.text, check_request)
+            MessageHandler(Filters.text & ~Filters.command, check_request)
         ],
         # State.HELP_SUBJECT_AGAIN: [
         #     MessageHandler(Filters.text, chose_subject_again)
