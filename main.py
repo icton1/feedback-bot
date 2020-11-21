@@ -38,14 +38,14 @@ def start(update: Update, context: CallbackContext):
 
 
 def show_change_lang_prompt(reply, context):
-    reply_keyboard = [[['Русский', 'ru'], ['Newru', 'newru']]]
+    reply_keyboard = tr.LANGUAGES
     reply(_(tr.SELECT_LANG, context),
           reply_markup=utils.make_inline_keyboard(reply_keyboard))
 
 
 def first_node(update: Update, context: CallbackContext):
     text = update.message.text
-    if text == _(tr.REVIEW, context):
+    if text == _(tr.MENU_REVIEW, context):
         reply_keyboard = [[_(tr.REVIEW_READ, context),
                            _(tr.REVIEW_ADD, context)],
                           [_(tr.BACK, context)]]
@@ -55,13 +55,13 @@ def first_node(update: Update, context: CallbackContext):
                                       reply_keyboard, one_time_keyboard=True
                                   ))
         return State.REVIEW
-    elif text == _(tr.HELLO, context):
+    elif text == _(tr.MENU_HELLO, context):
         hello(update, context)
         return
-    elif text == _(tr.CHANGE_LANG, context):
+    elif text == _(tr.MENU_CHANGE_LANG, context):
         show_change_lang_prompt(update.effective_user.send_message, context)
         return State.CHANGE_LANG
-    elif text == _(tr.SEND_FEEDBACK, context):
+    elif text == _(tr.MENU_SEND_FEEDBACK, context):
         return feedback.start(update, context)
     elif len(text) > 0 and text[-1] == '?':
         update.message.reply_text(_(tr.PASTA_STUDOFIS, context))

@@ -1,46 +1,40 @@
-HELLO = {'ru': 'Привет', 'newru': "ПрИвЕт!"}
-REVIEW = {'ru': 'Отзыв о преподователе', 'newru': "ОтзЫВ о ПрепоДОвАтелЕ"}
-CHANGE_LANG = {'ru': 'Поменять язык'}
-SEND_FEEDBACK = {'ru': 'Оставить обратную связь'}
-HELLO_TEXT = {'ru': 'Привет', 'newru': "ПрИвЕт!"}
+# Доступные языки
+LANGUAGES = [
+    # Каждый массив -- строка в менюшке выбора языка
+    [
+        # Каждый массив -- пара строк:
+        # ['Название в менюшке', 'Название в этом файле']
+        ['Русский', 'ru'],
+        ['Newru', 'newru']
+    ]
+]
+SELECT_LANG = {'ru': 'Выберите язык'}
+
+# Кнопочки в главном меню
+MENU_HELLO = {'ru': 'Привет', 'newru': "ПрИвЕт!"}
+MENU_REVIEW = {'ru': 'Отзыв о преподователе', 'newru': "ОтзЫВ о ПрепоДОвАтелЕ"}
+MENU_SELECT_LANG = {'ru': 'Поменять язык'}
+MENU_SEND_FEEDBACK = {'ru': 'Оставить обратную связь'}
+
+HELLO_TEXT = {'ru': 'Я вывожусь когда ты нажимаешь на "Привет"'}
 GOT_TO_MAIN_MENU = {'ru': 'Вы перешли в главное меню'}
 
-HELP_WITH_LEARNING = {'ru': 'Нужна помощь с предметом?'}
-CHOOSE_YOUR_SUBJECT = {'ru': 'Выберите предмет'}
-POPULAR_SUBJECT1 = {'ru': 'Креатех'}
-POPULAR_SUBJECT2 = {'ru': 'КИК'}
-POPULAR_SUBJECT3 = {'ru': 'Физра'}
-POPULAR_SUBJECT_OTHER = {'ru': 'Сам введу'}
-POPULAR_SUBJECT_OTHER_PROMPT = {'ru': 'Ну вводи'}
-CHOOSE_HELP_TYPE = {'ru': 'Хто я'}
-HELP_TYPE_TOGETHER = {'ru': 'Вместе'}
-HELP_TYPE_IM_WEAK = {'ru': 'Он(а) мне'}
-HELP_TYPE_IM_STRONK = {'ru': 'Я е(й)му'}
-HELP_AWARD_PROMPT = {'ru': 'Скажи сколько готов отдать'}
-HELP_DESCRIPTION_PROMPT = {'ru': 'Расскажи о себе, что тебе нужно'}
-HELP_LAST_PHRASE = {'ru': 'Пока :('}
-HELP_CHECK_REQUEST = {'ru': 'Проверь данные. Что хочешь поменять?'}
-HELP_SUBJECT = {'ru': 'Предмет'}
-HELP_TYPE = {'ru': 'Способ помощи'}
-HELP_AWARD = {'ru': 'Награда'}
-HELP_DESCRIPTION = {'ru': 'Описание'}
-HELP_CHECK_OK = {'ru': 'Все ок!'}
-SELECT_LANG = {'ru': 'Выберите язык'}
 REVIEW_ADD = {'ru': 'Добавить'}
 REVIEW_READ = {'ru': 'Читать'}
-BACK = {'ru':'Назад'}
-READ_OR_ADD = {'ru':'Вы хотите прочитать или добавить?'}
-INPUT_SUBJ_NAME = {'ru':'Введите название предмета'}
-INPUT_FIO = {'ru':'Введите ФИО преподователя'}
-OTZYV = {'ru':'Оставьте отзыв о преподователе'}
-INPUT_ALL_FIO = {'ru':'Введите полное ФИО'}
-WRITE_ONE_MORE = {'ru':'Написать заново'}
-TEACHER_NOT_FOUND = {'ru':'Такого преподователя не найдено'}
-START_INPUTING_NAMES = {'ru':'"Начните вводить имя преподователя"'}
-HOW_REVIEW_TEACHER = {'ru':"Как вы оцените преподователя? (из 10)"}
+BACK = {'ru': 'Назад'}
+READ_OR_ADD = {'ru': 'Вы хотите прочитать или добавить?'}
+INPUT_SUBJ_NAME = {'ru': 'Введите название предмета'}
+INPUT_FIO = {'ru': 'Введите ФИО преподователя'}
+OTZYV = {'ru': 'Оставьте отзыв о преподователе'}
+INPUT_ALL_FIO = {'ru': 'Введите полное ФИО'}
+WRITE_ONE_MORE = {'ru': 'Написать заново'}
+TEACHER_NOT_FOUND = {'ru': 'Такого преподователя не найдено'}
+START_INPUTING_NAMES = {'ru': '"Начните вводить имя преподователя"'}
+HOW_REVIEW_TEACHER = {'ru': "Как вы оцените преподователя? (из 10)"}
 EXCELLENT = {'ru': 'Ответ успешно записан'}
-WRONG_RATING = {'ru':'Неправильный рейтинг, выберите число от 0 до 10'}
-NOT_IN_LIST = {'ru':'Нет в списке?'}
+WRONG_RATING = {'ru': 'Неправильный рейтинг, выберите число от 0 до 10'}
+NOT_IN_LIST = {'ru': 'Нет в списке?'}
+
 PASTA_STUDOFIS = {'ru': '''
 Уточни этот вопрос у Студенческого офиса Университета ИТМО
 Они работают с 9 до 19 каждый будний день и будут рады ответить тебе по телефону или по почте
@@ -48,6 +42,28 @@ PASTA_STUDOFIS = {'ru': '''
 А ещё можно попробовать найти информацию самостоятельно на сайте
 Впредь прошу понять, что этот бот не является компетентными в решении похожих вопросов. Именно поэтому, для решения таких проблем была создана "единая точка входа" - Студенческий офис.
 '''}
+
+# Легаси. Не трогать.
+HELP_WITH_LEARNING = {'ru': 'Легаси. Не трогать.'}
+CHOOSE_YOUR_SUBJECT = {'ru': 'Легаси. Не трогать.'}
+POPULAR_SUBJECT1 = {'ru': 'Легаси. Не трогать.'}
+POPULAR_SUBJECT2 = {'ru': 'Легаси. Не трогать.'}
+POPULAR_SUBJECT3 = {'ru': 'Легаси. Не трогать.'}
+POPULAR_SUBJECT_OTHER = {'ru': 'Легаси. Не трогать.'}
+POPULAR_SUBJECT_OTHER_PROMPT = {'ru': 'Легаси. Не трогать.'}
+CHOOSE_HELP_TYPE = {'ru': 'Легаси. Не трогать.'}
+HELP_TYPE_TOGETHER = {'ru': 'Легаси. Не трогать.'}
+HELP_TYPE_IM_WEAK = {'ru': 'Легаси. Не трогать.'}
+HELP_TYPE_IM_STRONK = {'ru': 'Легаси. Не трогать.'}
+HELP_AWARD_PROMPT = {'ru': 'Легаси. Не трогать.'}
+HELP_DESCRIPTION_PROMPT = {'ru': 'Легаси. Не трогать.'}
+HELP_LAST_PHRASE = {'ru': 'Легаси. Не трогать.'}
+HELP_CHECK_REQUEST = {'ru': 'Легаси. Не трогать.'}
+HELP_SUBJECT = {'ru': 'Легаси. Не трогать.'}
+HELP_TYPE = {'ru': 'Легаси. Не трогать.'}
+HELP_AWARD = {'ru': 'Легаси. Не трогать.'}
+HELP_DESCRIPTION = {'ru': 'Легаси. Не трогать.'}
+HELP_CHECK_OK = {'ru': 'Легаси. Не трогать.'}
 
 
 def gettext(phrase, context):

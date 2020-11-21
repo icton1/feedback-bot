@@ -12,10 +12,10 @@ def make_inline_keyboard(rows):
 
 
 def get_main_keyboard(context):
-    reply_keyboard = [[_(tr.HELLO, context),
-                       _(tr.CHANGE_LANG, context)],
-                      [_(tr.SEND_FEEDBACK, context),
-                       _(tr.REVIEW, context)]]
+    reply_keyboard = [[_(tr.MENU_HELLO, context),
+                       _(tr.MENU_SELECT_LANG, context)],
+                      [_(tr.MENU_SEND_FEEDBACK, context),
+                       _(tr.MENU_REVIEW, context)]]
     return ReplyKeyboardMarkup(
         reply_keyboard, one_time_keyboard=True
     )
