@@ -23,3 +23,5 @@ class State(Enum):
     HELP_DESCRIPTION_AGAIN = auto()
     HELP_MATCHING = auto()
     HELP_MATCHED = auto()
+    ADD_T_INLINE = auto()
+    ADDICTIONAL_ADD = auto()

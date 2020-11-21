@@ -19,6 +19,7 @@ MAX_INLINE_ROWS = 5
 
 
 class Answers:
+    NOT_IN_LIST = 'NOT_IN_LIST'
     TYPE_AGAIN = 'TYPE_AGAIN'
     FORWARD = 'FORWARD'
     BACK = 'BACK'
@@ -43,12 +44,37 @@ def start(update: Update, context: CallbackContext):
 
 def add_t(update: Update, context: CallbackContext):
     teachers = bd_worker.find_teachers(update.message.text)
-    if teachers!=[]:
+    if teachers:
         context.user_data['teacher_name'] = update.message.text
-        context.user_data[TEACHERS_KEYBOARD] = get_teachers_keyboards(teachers)
+        print(get_teachers_keyboards(teachers))
+        context.user_data[TEACHERS_KEYBOARD] = [get_teachers_keyboards(teachers)[0][:-1]]
+        print(context.user_data[TEACHERS_KEYBOARD])
+        context.user_data[TEACHERS_KEYBOARD][0].append([['Нет в списке?', 'NOT_IN_LIST']])
+        print(context.user_data[TEACHERS_KEYBOARD])
         show_teachers(update.message.reply_text, context)
+        return State.ADD_T_INLINE
+    else:
+        context.user_data['teacher_name'] = update.message.text
+        update.message.reply_text("Оставьте отзыв о преподователе")
+        return State.ADD_DESC
+
+
+def addictional_add(update, context):
+    context.user_data['teacher_name'] = update.message.text
     update.message.reply_text("Оставьте отзыв о преподователе")
     return State.ADD_DESC
+
+
+def add_t_inline(update, context):
+    data, reply = answer_query(update, context)
+    if data == Answers.NOT_IN_LIST:
+        reply("Введите полное ФИО")
+        return State.ADDICTIONAL_ADD
+    else:
+        print(data)
+        context.user_data['teacher_name'] = data
+        reply("Оставьте отзыв о преподователе")
+        return State.ADD_DESC
 
 
 def get_teachers_keyboards(teachers):
@@ -134,9 +160,15 @@ def add_desc(update: Update, context: CallbackContext):
 def add_rating(update: Update, context: CallbackContext):
     if update.message.text.isnumeric() and 0 <= int(update.message.text) <= 10:
         context.user_data['teacher_rating'] = update.message.text
-        bd_worker.add_new_teacher(context.user_data['teacher_name'],
-                                  context.user_data['teacher_desc'],
-                                  context.user_data['teacher_rating'])
+        teacher = bd_worker.read_teacher(context.user_data['teacher_name'])
+        if not teacher:
+            bd_worker.add_new_teacher(context.user_data['teacher_name'],
+                                      context.user_data['teacher_desc'],
+                                      context.user_data['teacher_rating'])
+        else:
+            bd_worker.add_new_description(context.user_data['teacher_name'],
+                                      context.user_data['teacher_desc'],
+                                      context.user_data['teacher_rating'])
         main_reply(update.message.reply_text, context)
         return State.FIRST_NODE
     else:
@@ -147,10 +179,12 @@ def add_rating(update: Update, context: CallbackContext):
 
 def get_states():
     return {
+        State.ADDICTIONAL_ADD: [MessageHandler(Filters.text, addictional_add)],
         State.REVIEW: [MessageHandler(Filters.text, start)],
         State.ADD_T: [MessageHandler(Filters.text, add_t)],
         State.READ_T: [MessageHandler(Filters.text, read_t)],
         State.READ_T_INLINE: [CallbackQueryHandler(read_t_inline)],
+        State.ADD_T_INLINE: [CallbackQueryHandler(add_t_inline)],
         State.ADD_DESC: [MessageHandler(Filters.text, add_desc)],
         State.ADD_RATING: [MessageHandler(Filters.text, add_rating)],
     }
