@@ -6,6 +6,7 @@ class State(Enum):
     REVIEW = auto()
     ADD_T = auto()
     READ_T = auto()
+    READ_T_INLINE = auto()
     ADD_DESC = auto()
     ADD_RATING = auto()
 

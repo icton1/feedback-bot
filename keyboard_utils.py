@@ -19,3 +19,7 @@ def get_main_keyboard(context):
     return ReplyKeyboardMarkup(
         reply_keyboard, one_time_keyboard=True
     )
+
+
+def main_reply(reply, context):
+    reply('Привет! Я бот!', reply_markup=get_main_keyboard(context))
