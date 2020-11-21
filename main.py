@@ -5,7 +5,7 @@ from translations import gettext as _
 from config import token
 import learning_help
 import teachers_review
-import keyboard_utils
+import utils
 import bd_worker
 
 from telegram import Update, ReplyKeyboardMarkup, Message
@@ -15,7 +15,7 @@ from telegram.ext import (
     MessageHandler,
     Filters,
     ConversationHandler,
-    CallbackContext,
+    CallbackContext, CallbackQueryHandler,
 )
 
 logging.basicConfig(
@@ -27,17 +27,14 @@ logger = logging.getLogger(__name__)
 
 
 def start(update: Update, context: CallbackContext):
-    reply_keyboard = [[_(tr.HELLO, context)],
-                      ['Обратиться в центр качества образования',
-                       'Нужна помощь с предметом?'],
-                      [_(tr.REVIEW, context)]]
-    update.message.reply_text(update.message.text,
-                              reply_markup=ReplyKeyboardMarkup(
-                                  reply_keyboard, one_time_keyboard=True
-                              ))
+    utils.main_reply(update.message.reply_text, context)
     return State.FIRST_NODE
 
 
+def show_change_lang_prompt(reply, context):
+    reply_keyboard = [[['Русский', 'ru'], ['Newru', 'newru']]]
+    reply('Выберите язык',
+          reply_markup=utils.make_inline_keyboard(reply_keyboard))
 
 
 def first_node(update: Update, context: CallbackContext):
@@ -51,8 +48,19 @@ def first_node(update: Update, context: CallbackContext):
         return State.REVIEW
     elif update.message.text == _(tr.HELP_WITH_LEARNING, context):
         return learning_help.start(update, context)
+    elif update.message.text == _(tr.CHANGE_LANG, context):
+        show_change_lang_prompt(update.effective_user.send_message, context)
+        return State.CHANGE_LANG
     elif len(update.message.text)>0 and update.message.text[-1]=='?':
         update.message.reply_text(_(tr.PASTA_STUDOFIS, context))
+
+
+def choose_lang(update, context):
+    data, reply = utils.answer_query(update, context)
+    context.user_data['lang'] = data
+    reply('Успешно!')
+    utils.main_reply(update.effective_user.send_message, context)
+    return State.FIRST_NODE
 
 
 def main():
@@ -65,6 +73,7 @@ def main():
         entry_points=[CommandHandler('start', start)],
         states={
             State.FIRST_NODE: [MessageHandler(Filters.text, first_node)],
+            State.CHANGE_LANG: [CallbackQueryHandler(choose_lang)],
             **learning_help.get_states(),
             **teachers_review.get_states()
         },

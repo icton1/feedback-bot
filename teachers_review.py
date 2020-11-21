@@ -7,7 +7,7 @@ import translations
 import bd_worker
 import translations as tr
 from translations import gettext as _
-from keyboard_utils import make_inline_keyboard, main_reply
+from utils import make_inline_keyboard, main_reply, answer_query
 
 from states import State
 
@@ -22,13 +22,6 @@ class Answers:
     TYPE_AGAIN = 'TYPE_AGAIN'
     FORWARD = 'FORWARD'
     BACK = 'BACK'
-
-
-def answer_query(update, context):
-    query: CallbackQuery = update.callback_query
-    data = query.data
-    query.answer()
-    return data, query.edit_message_text
 
 
 def start(update: Update, context: CallbackContext):

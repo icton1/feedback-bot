@@ -5,7 +5,7 @@ from telegram.ext import CallbackQueryHandler, MessageHandler, Filters
 
 from translations import gettext as _
 import translations as tr
-from keyboard_utils import make_inline_keyboard, get_main_keyboard
+from utils import make_inline_keyboard, get_main_keyboard
 
 from states import State
 
