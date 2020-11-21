@@ -10,8 +10,8 @@ from utils import make_inline_keyboard, main_reply, answer_query
 
 from states import State
 
-TEACHERS_KEYBOARD = 'TEACHERS_LIST'
-TEACHERS_INDEX = 'TEACHERS_LIST_INDEX'
+LIST_KEYBOARD = 'LIST_KEYBOARD'
+LIST_KEYBOARD_INDEX = 'LIST_KEYBOARD_INDEX'
 MAX_INLINE_CHARACTERS = 80
 MAX_INLINE_COLUMNS = 1
 MAX_INLINE_ROWS = 5
@@ -24,17 +24,94 @@ class Answers:
     BACK = 'BACK'
 
 
+def save_list_keyboard(options, context,
+                       add_additional_buttons=lambda: []):
+    rows = [[]]
+    last_len = 0
+    for option in options:
+        if (last_len + len(option) > MAX_INLINE_CHARACTERS
+            or len(rows[-1]) + 1 > MAX_INLINE_COLUMNS) \
+                and len(rows[-1]) != 0:
+            rows.append([])
+        rows[-1].append([option] * 2)
+    keyboards = []
+    for i in range(0, len(rows), MAX_INLINE_ROWS - 1):
+        keyboards.append(rows[i:i + MAX_INLINE_ROWS - 1])
+        row = [
+            *add_additional_buttons()
+        ]
+        if i > 0:
+            row.append([_(tr.LAST_PAGE, context), Answers.BACK])
+        if i + MAX_INLINE_ROWS - 1 < len(rows):
+            row.append([_(tr.NEXT_PAGE, context), Answers.FORWARD])
+        keyboards[-1].append(row)
+    context.user_data[LIST_KEYBOARD] = keyboards
+
+
+def show_list_keyboard(set_message, context, title_phrase):
+    keyboard = context.user_data[LIST_KEYBOARD]
+    i = context.user_data.setdefault(LIST_KEYBOARD_INDEX, 0)
+    keyboard = keyboard[i]
+    set_message(text=_(title_phrase, context),
+                reply_markup=make_inline_keyboard(keyboard))
+
+
+def handle_list_keyboard_query(update, context, show, choose_option):
+    data, reply = answer_query(update, context)
+
+    if data == Answers.FORWARD:
+        context.user_data[LIST_KEYBOARD_INDEX] += 1
+        show(reply, context)
+        return None
+    elif data == Answers.BACK:
+        context.user_data[LIST_KEYBOARD_INDEX] -= 1
+        show(reply, context)
+        return None
+    else:
+        del context.user_data[LIST_KEYBOARD]
+        del context.user_data[LIST_KEYBOARD_INDEX]
+        return choose_option(update, context, data, reply)
+
+
+def save_teachers_keyboards(teachers, context):
+    save_list_keyboard(
+        teachers, context,
+        lambda: [[_(tr.WRITE_ONE_MORE, context), Answers.TYPE_AGAIN]]
+    )
+
+
+def get_add_teachers_keyboards(teachers, context):
+    return save_list_keyboard(
+        teachers, context,
+        lambda: [[_(tr.NOT_IN_LIST, context), Answers.NOT_IN_LIST]]
+    )
+
+
+def show_teachers(set_message, context):
+    return show_list_keyboard(set_message, context, tr.TEACHER_LIST_TITLE)
+
+
+def save_subject_keyboards(subjects, context):
+    save_list_keyboard(
+        subjects, context,
+        lambda: [[_(tr.NOT_IN_LIST, context), Answers.NOT_IN_LIST]]
+    )
+
+
+def show_subjects(set_message, context):
+    return show_list_keyboard(set_message, context, tr.SUBJECT_LIST_TITLE)
+
+
 def start(update: Update, context: CallbackContext):
+    # TODO back button
     reply_keyboard = [[_(tr.BACK, context)]]
     if update.message.text == _(tr.REVIEW_ADD, context):
-        update.message.reply_text(_(tr.INPUT_SUBJ_NAME, context), reply_markup=ReplyKeyboardMarkup(
-                                      reply_keyboard, one_time_keyboard=True
-                                  ))
+        save_subject_keyboards(bd_worker.get_all_subjects(), context)
+        show_subjects(update.message.reply_text, context)
         return State.ADD_TO_SUBJECT
     elif update.message.text == _(tr.REVIEW_READ, context):
-        update.message.reply_text(_(tr.INPUT_SUBJ_NAME, context), reply_markup=ReplyKeyboardMarkup(
-                                      reply_keyboard, one_time_keyboard=True
-                                  ))
+        save_subject_keyboards(bd_worker.get_all_subjects(), context)
+        show_subjects(update.message.reply_text, context)
         return State.READ_FROM_SUBJECT
     elif update.message.text == _(tr.BACK, context):
         main_reply(update.message.reply_text, context)
@@ -43,47 +120,36 @@ def start(update: Update, context: CallbackContext):
 
 
 def read_from_subject(update: Update, context: CallbackContext):
-    subj = update.message.text
-    if subj == _(tr.BACK, context):
-        main_reply(update.message.reply_text, context)
-        return State.FIRST_NODE
-    # TODO inline!!!
-    print(bd_worker.read_subject(subj))
-    if bd_worker.is_subject_exist(subj):
-        context.user_data['subject'] = subj
-        update.message.reply_text(_(tr.START_INPUTING_NAMES, context))
+    def choose_option(update, context, data, reply):
+        if data == _(tr.BACK, context):
+            main_reply(reply, context)
+            return State.FIRST_NODE
+        context.user_data['subject'] = data
+        reply(_(tr.START_INPUTING_NAMES, context))
         return State.READ_T
-    else:
-        # TODO мб формат вытащить выше? чтобы Аня посмотрела
-        update.message.reply_text(
-            'Выберете предмет из списка:\n' + '\n'.join(bd_worker.get_all_subjects()) + '\nПредмета нет в списке?')
+
+    return handle_list_keyboard_query(update, context,
+                                      show_subjects, choose_option)
 
 
 def add_to_subject(update: Update, context: CallbackContext):
-    subj = update.message.text
-    if subj == _(tr.BACK, context):
-        main_reply(update.message.reply_text, context)
-        return State.FIRST_NODE
-    # TODO inline!!!
-    if bd_worker.is_subject_exist(subj):
-        context.user_data['subject'] = subj
+    def choose_option(update, context, data, reply):
+        if data == _(tr.BACK, context):
+            main_reply(reply, context)
+            return State.FIRST_NODE
+        context.user_data['subject'] = data
         update.message.reply_text(_(tr.INPUT_FIO, context))
         return State.ADD_T
-    else:
-        # TODO мб формат вытащить выше? чтобы Аня посмотрела
-        update.message.reply_text(
-            'Выберете предмет из списка:\n' + '\n'.join(bd_worker.get_all_subjects()) + '\nПредмета нет в списке?')
+
+    return handle_list_keyboard_query(update, context,
+                                      show_subjects, choose_option)
 
 
 def add_t(update: Update, context: CallbackContext):
     teachers = bd_worker.find_teachers(context.user_data['subject'], update.message.text)
     if teachers:
         context.user_data['teacher_name'] = update.message.text
-        print(get_teachers_keyboards(teachers, context))
-        context.user_data[TEACHERS_KEYBOARD] = [get_teachers_keyboards(teachers, context)[0][:-1]]
-        print(context.user_data[TEACHERS_KEYBOARD])
-        context.user_data[TEACHERS_KEYBOARD][0].append([[_(tr.NOT_IN_LIST, context), 'NOT_IN_LIST']])
-        print(context.user_data[TEACHERS_KEYBOARD])
+        save_teachers_keyboards(teachers, context)
         show_teachers(update.message.reply_text, context)
         return State.ADD_T_INLINE
     else:
@@ -99,53 +165,26 @@ def addictional_add(update, context):
 
 
 def add_t_inline(update, context):
-    data, reply = answer_query(update, context)
-    if data == Answers.NOT_IN_LIST:
-        reply(_(tr.INPUT_ALL_FIO, context))
-        return State.ADDICTIONAL_ADD
-    else:
-        print(data)
-        context.user_data['teacher_name'] = data
-        reply(_(tr.OTZYV, context))
-        return State.ADD_DESC
+    def choose_option(update, context, data, reply):
+        if data == Answers.NOT_IN_LIST:
+            reply(_(tr.INPUT_ALL_FIO, context))
+            return State.ADDICTIONAL_ADD
+        else:
+            context.user_data['teacher_name'] = data
+            reply(_(tr.OTZYV, context))
+            return State.ADD_DESC
 
-
-def get_teachers_keyboards(teachers, context):
-    rows = [[]]
-    last_len = 0
-    for t in teachers:
-        if (last_len + len(t) > MAX_INLINE_CHARACTERS
-            or len(rows[-1]) + 1 > MAX_INLINE_COLUMNS) \
-                and len(rows[-1]) != 0:
-            rows.append([])
-        rows[-1].append([t, t])
-    keyboards = []
-    for i in range(0, len(rows), MAX_INLINE_ROWS - 1):
-        keyboards.append(rows[i:i + MAX_INLINE_ROWS - 1])
-        row = [
-            [_(tr.WRITE_ONE_MORE, context), Answers.TYPE_AGAIN]
-        ]
-        if i > 0:
-            row.append([_(tr.LAST_PAGE, context), Answers.BACK])
-        if i + MAX_INLINE_ROWS - 1 < len(rows):
-            row.append([_(tr.NEXT_PAGE, context), Answers.FORWARD])
-        keyboards[-1].append(row)
-    return keyboards
-
-
-def show_teachers(set_message, context):
-    teachers_keyboard = context.user_data[TEACHERS_KEYBOARD]
-    i = context.user_data.setdefault(TEACHERS_INDEX, 0)
-    keyboard = teachers_keyboard[i]
-    set_message(text=_(tr.TEACHER_LIST_TITLE, context),
-                reply_markup=make_inline_keyboard(keyboard))
+    return handle_list_keyboard_query(update, context,
+                                      show_teachers, choose_option)
 
 
 def show_teacher_feedback(reply, teacher_name, context):
     teacher = bd_worker.read_teacher(context.user_data['subject'], teacher_name)
-    # TODO мб формат вытащить выше? чтобы Аня посмотрела
-    msg = str(teacher_name) + '\nРейтинг: ' + str(
-        sum(teacher["ratings"]) / len(teacher["ratings"])) + '\nОтзывы:\n' + '\n***\n'.join(teacher["feedback"])
+    rating = str(sum(teacher["ratings"]) / len(teacher["ratings"]))
+    reviews = _(tr.REVIEWS_SEPARATOR, context).join(teacher["feedback"])
+    msg = _(tr.TEACHER_PROFILE_PATTERN, context).format(
+        teacher=teacher_name, rating=rating, reviews=reviews
+    )
     reply(msg)
 
 
@@ -154,7 +193,7 @@ def read_t(update: Update, context: CallbackContext):
     if len(teachers) == 0:
         update.message.reply_text(_(tr.TEACHER_NOT_FOUND, context))
     elif len(teachers) > 1:
-        context.user_data[TEACHERS_KEYBOARD] = get_teachers_keyboards(teachers, context)
+        save_teachers_keyboards(teachers, context)
         show_teachers(update.message.reply_text, context)
         return State.READ_T_INLINE
     else:
@@ -164,25 +203,17 @@ def read_t(update: Update, context: CallbackContext):
 
 
 def read_t_inline(update, context):
-    data, reply = answer_query(update, context)
+    def choose_option(update, context, data, reply):
+        if data == Answers.TYPE_AGAIN:
+            reply(_(tr.START_INPUTING_NAMES, context))
+            return State.READ_T
+        else:
+            show_teacher_feedback(reply, data, context)
+            main_reply(update.effective_user.send_message, context)
+            return State.FIRST_NODE
 
-    if data == Answers.FORWARD:
-        context.user_data[TEACHERS_INDEX] += 1
-        show_teachers(reply, context)
-        return None
-    elif data == Answers.BACK:
-        context.user_data[TEACHERS_INDEX] -= 1
-        show_teachers(reply, context)
-        return None
-    elif data == Answers.TYPE_AGAIN:
-        del context.user_data[TEACHERS_INDEX]
-        reply(_(tr.START_INPUTING_NAMES, context))
-        return State.READ_T
-    else:
-        del context.user_data[TEACHERS_INDEX]
-        show_teacher_feedback(reply, data, context)
-        main_reply(update.effective_user.send_message, context)
-        return State.FIRST_NODE
+    return handle_list_keyboard_query(update, context,
+                                      show_teachers, choose_option)
 
 
 def add_desc(update: Update, context: CallbackContext):
@@ -224,6 +255,6 @@ def get_states():
         State.ADD_T_INLINE: [CallbackQueryHandler(add_t_inline)],
         State.ADD_DESC: [MessageHandler(Filters.text & ~Filters.command, add_desc)],
         State.ADD_RATING: [MessageHandler(Filters.text & ~Filters.command, add_rating)],
-        State.READ_FROM_SUBJECT: [MessageHandler(Filters.text & ~Filters.command, read_from_subject)],
-        State.ADD_TO_SUBJECT: [MessageHandler(Filters.text & ~Filters.command, add_to_subject)],
+        State.READ_FROM_SUBJECT: [CallbackQueryHandler(read_from_subject)],
+        State.ADD_TO_SUBJECT: [CallbackQueryHandler(add_to_subject)],
     }

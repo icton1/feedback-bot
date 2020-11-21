@@ -32,18 +32,30 @@ READ_OR_ADD = {'ru': 'Вы хотите прочитать или добавит
 REVIEW_ADD = {'ru': 'Добавить'}
 REVIEW_READ = {'ru': 'Читать'}
 
-INPUT_SUBJ_NAME = {'ru': 'Введите название предмета'}
 INPUT_FIO = {'ru': 'Введите ФИО преподователя'}
 OTZYV = {'ru': 'Оставьте отзыв о преподователе'}
 INPUT_ALL_FIO = {'ru': 'Введите полное ФИО'}
 WRITE_ONE_MORE = {'ru': 'Написать заново'}
 START_INPUTING_NAMES = {'ru': '"Начните вводить имя преподователя"'}
 TEACHER_LIST_TITLE = {'ru': 'Учителя'}
+SUBJECT_LIST_TITLE = {'ru': 'Выберите предмет'}
 TEACHER_NOT_FOUND = {'ru': 'Такого преподователя не найдено'}
 HOW_REVIEW_TEACHER = {'ru': "Как вы оцените преподователя? (из 10)"}
 EXCELLENT = {'ru': 'Ответ успешно записан'}
 WRONG_RATING = {'ru': 'Неправильный рейтинг, выберите число от 0 до 10'}
+
+# При выборе учителя / предмета в списке
 NOT_IN_LIST = {'ru': 'Нет в списке?'}
+
+# Тут как мы показываем отзыв, формат готов к правкам TODO
+TEACHER_PROFILE_PATTERN = {'ru': '''
+{teacher}
+Рейтинг: {rating}
+Отзывы:
+{reviews}
+'''}
+
+REVIEWS_SEPARATOR = {'ru': '\n=================\n'}
 
 # Дальше идут фразы из фичи Миши
 STRING_POLLS = {
