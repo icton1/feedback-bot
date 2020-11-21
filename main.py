@@ -2,6 +2,7 @@ import logging
 from states import State
 import translations as tr
 from translations import gettext as _
+from config import token
 import learning_help
 import teachers_review
 import feedback
@@ -14,7 +15,7 @@ from telegram.ext import (
     MessageHandler,
     Filters,
     ConversationHandler,
-    CallbackContext, CallbackQueryHandler, PollAnswerHandler,
+    CallbackContext, CallbackQueryHandler
 )
 
 POLL_STATE = 'POLL_STATE'
@@ -34,15 +35,17 @@ def start(update: Update, context: CallbackContext):
 
 def show_change_lang_prompt(reply, context):
     reply_keyboard = [[['Русский', 'ru'], ['Newru', 'newru']]]
-    reply('Выберите язык',
+    reply(_(tr.SELECT_LANG, context),
           reply_markup=utils.make_inline_keyboard(reply_keyboard))
 
 
 def first_node(update: Update, context: CallbackContext):
     text = update.message.text
     if text == _(tr.REVIEW, context):
-        reply_keyboard = [[_(tr.REVIEW_READ, context), _(tr.REVIEW_ADD, context)], ['Назад']]
-        update.message.reply_text('Вы хотите прочитать или добавить?', )
+        reply_keyboard = [[_(tr.REVIEW_READ, context),
+                           _(tr.REVIEW_ADD, context)],
+                          [_(tr.BACK)]]
+        update.message.reply_text(_(tr.READ_OR_ADD, context))
         update.message.reply_text(update.message.text,
                                   reply_markup=ReplyKeyboardMarkup(
                                       reply_keyboard, one_time_keyboard=True
@@ -68,7 +71,6 @@ def choose_lang(update, context):
 
 
 def main():
-    from config import token
     updater = Updater(token, use_context=True)
 
     dispatcher = updater.dispatcher
@@ -76,13 +78,14 @@ def main():
     main_conv = ConversationHandler(
         entry_points=[MessageHandler(Filters.text, start)],
         states={
-            State.FIRST_NODE: [MessageHandler(Filters.text, first_node)],
+            State.FIRST_NODE: [MessageHandler(Filters.text & ~Filters.command,
+                                              first_node)],
             State.CHANGE_LANG: [CallbackQueryHandler(choose_lang)],
             **learning_help.get_states(),
             **teachers_review.get_states(),
             **feedback.get_states()
         },
-        fallbacks=[]
+        fallbacks=[CommandHandler('stop', start)],
     )
 
     dispatcher.add_handler(main_conv)

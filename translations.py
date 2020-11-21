@@ -23,9 +23,18 @@ HELP_TYPE = {'ru': 'Способ помощи'}
 HELP_AWARD = {'ru': 'Награда'}
 HELP_DESCRIPTION = {'ru': 'Описание'}
 HELP_CHECK_OK = {'ru': 'Все ок!'}
-
+SELECT_LANG = {'ru': 'Выберите язык'}
 REVIEW_ADD = {'ru': 'Добавить'}
 REVIEW_READ = {'ru': 'Читать'}
+BACK = {'ru':'Назад'}
+READ_OR_ADD = {'ru':'Вы хотите прочитать или добавить?'}
+INPUT_SUBJ_NAME = {'ru':'Введите название предмета'}
+INPUT_FIO = {'ru':'Введите ФИО преподователя'}
+OTZYV = {'ru':'Оставьте отзыв о преподователе'}
+INPUT_ALL_FIO = {'ru':'Введите полное ФИО'}
+WRITE_ONE_MORE = {'ru':'Написать заново'}
+
+START_INPUTING_NAMES = {'ru':'"Начните вводить имя преподователя"'}
 
 PASTA_STUDOFIS = {'ru': '''
 Уточни этот вопрос у Студенческого офиса Университета ИТМО
