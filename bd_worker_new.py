@@ -37,6 +37,7 @@ def find_teachers(subject, st):
                 ret.append(i)
         return ret
 
+
 def read_teacher(subject, name):
     with open(filename, 'r') as f:
         subjects_fo = json.load(f)
@@ -46,12 +47,15 @@ def read_teacher(subject, name):
 
 
 """---------------------------------------"""
+
+
 def add_new_subject(name):
     with open(filename, 'r') as f:
         subjects_fo = json.load(f)
         subjects_fo[name] = {}
     with open(filename, 'w') as f:
         json.dump(subjects_fo, f)
+
 
 def find_subject(st):
     with open(filename, 'r') as f:
@@ -61,6 +65,7 @@ def find_subject(st):
             if st in i:
                 ret.append(i)
         return ret
+
 
 def read_subject(name):
     with open(filename, 'r') as f:
