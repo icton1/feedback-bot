@@ -29,7 +29,10 @@ logger = logging.getLogger(__name__)
 
 
 def hello(update, context):
-    update.effective_user.send_message(_(tr.HELLO_TEXT, context))
+    update.effective_user.send_message(
+        _(tr.HELLO_TEXT, context),
+        reply_markup=utils.get_main_keyboard(context)
+    )
 
 
 def start(update: Update, context: CallbackContext):
@@ -70,7 +73,7 @@ def first_node(update: Update, context: CallbackContext):
 def choose_lang(update, context):
     data, reply = utils.answer_query(update, context)
     context.user_data['lang'] = data
-    reply('Успешно!')
+    reply(_(tr.SUCCESSFULLY_SELECTED_LANG, context))
     utils.main_reply(update.effective_user.send_message, context)
     return State.FIRST_NODE
 

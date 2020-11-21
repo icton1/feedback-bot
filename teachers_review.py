@@ -3,7 +3,6 @@ from telegram import (
 )
 from telegram.ext import CallbackQueryHandler, MessageHandler, Filters, \
     CallbackContext
-import translations
 import bd_worker_new as bd_worker
 import translations as tr
 from translations import gettext as _
@@ -55,6 +54,7 @@ def read_from_subject(update: Update, context: CallbackContext):
         update.message.reply_text(_(tr.START_INPUTING_NAMES, context))
         return State.READ_T
     else:
+        # TODO мб формат вытащить выше? чтобы Аня посмотрела
         update.message.reply_text(
             'Выберете предмет из списка:\n' + '\n'.join(bd_worker.get_all_subjects()) + '\nПредмета нет в списке?')
 
@@ -70,6 +70,7 @@ def add_to_subject(update: Update, context: CallbackContext):
         update.message.reply_text(_(tr.INPUT_FIO, context))
         return State.ADD_T
     else:
+        # TODO мб формат вытащить выше? чтобы Аня посмотрела
         update.message.reply_text(
             'Выберете предмет из списка:\n' + '\n'.join(bd_worker.get_all_subjects()) + '\nПредмета нет в списке?')
 
@@ -125,9 +126,9 @@ def get_teachers_keyboards(teachers, context):
             [_(tr.WRITE_ONE_MORE, context), Answers.TYPE_AGAIN]
         ]
         if i > 0:
-            row.append(['<<< Назад', Answers.BACK])
+            row.append([_(tr.LAST_PAGE, context), Answers.BACK])
         if i + MAX_INLINE_ROWS - 1 < len(rows):
-            row.append(['>>> Дальше', Answers.FORWARD])
+            row.append([_(tr.NEXT_PAGE, context), Answers.FORWARD])
         keyboards[-1].append(row)
     return keyboards
 
@@ -136,11 +137,13 @@ def show_teachers(set_message, context):
     teachers_keyboard = context.user_data[TEACHERS_KEYBOARD]
     i = context.user_data.setdefault(TEACHERS_INDEX, 0)
     keyboard = teachers_keyboard[i]
-    set_message(text="Учителя:", reply_markup=make_inline_keyboard(keyboard))
+    set_message(text=_(tr.TEACHER_LIST_TITLE, context),
+                reply_markup=make_inline_keyboard(keyboard))
 
 
 def show_teacher_feedback(reply, teacher_name, context):
     teacher = bd_worker.read_teacher(context.user_data['subject'], teacher_name)
+    # TODO мб формат вытащить выше? чтобы Аня посмотрела
     msg = str(teacher_name) + '\nРейтинг: ' + str(
         sum(teacher["ratings"]) / len(teacher["ratings"])) + '\nОтзывы:\n' + '\n***\n'.join(teacher["feedback"])
     reply(msg)
