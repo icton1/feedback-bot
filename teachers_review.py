@@ -26,11 +26,16 @@ class Answers:
 
 
 def start(update: Update, context: CallbackContext):
+    reply_keyboard = [['Назад']]
     if update.message.text == _(tr.REVIEW_ADD, context):
-        update.message.reply_text("Введите название предмета")
+        update.message.reply_text("Введите название предмета", reply_markup=ReplyKeyboardMarkup(
+                                      reply_keyboard, one_time_keyboard=True
+                                  ))
         return State.ADD_TO_SUBJECT
     elif update.message.text == _(tr.REVIEW_READ, context):
-        update.message.reply_text("Введите название предмета")
+        update.message.reply_text("Введите название предмета", reply_markup=ReplyKeyboardMarkup(
+                                      reply_keyboard, one_time_keyboard=True
+                                  ))
         return State.READ_FROM_SUBJECT
     elif update.message.text == 'Назад':
         main_reply(update.message.reply_text, context)
@@ -40,6 +45,9 @@ def start(update: Update, context: CallbackContext):
 
 def read_from_subject(update: Update, context: CallbackContext):
     subj = update.message.text
+    if subj == 'Назад':
+        main_reply(update.message.reply_text, context)
+        return State.FIRST_NODE
     # TODO inline!!!
     print(bd_worker.read_subject(subj))
     if bd_worker.is_subject_exist(subj):
@@ -53,6 +61,9 @@ def read_from_subject(update: Update, context: CallbackContext):
 
 def add_to_subject(update: Update, context: CallbackContext):
     subj = update.message.text
+    if subj == 'Назад':
+        main_reply(update.message.reply_text, context)
+        return State.FIRST_NODE
     # TODO inline!!!
     if bd_worker.is_subject_exist(subj):
         context.user_data['subject'] = subj
@@ -191,6 +202,7 @@ def add_rating(update: Update, context: CallbackContext):
                                           context.user_data['teacher_name'],
                                           context.user_data['teacher_desc'],
                                           context.user_data['teacher_rating'])
+        update.message.reply_text("Ответ успешно записан")
         main_reply(update.message.reply_text, context)
         return State.FIRST_NODE
     else:

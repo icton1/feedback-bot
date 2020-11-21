@@ -57,7 +57,7 @@ def add_new_subject(name):
         json.dump(subjects_fo, f)
 
 
-def find_subject(st):
+def find_subject(st) -> list:
     with open(filename, 'r') as f:
         ret = []
         subjects_fo = json.load(f)
@@ -75,7 +75,7 @@ def read_subject(name):
         return subjects_fo[name]
 
 
-def get_all_subjects():
+def get_all_subjects() -> list:
     with open(filename, 'r') as f:
         subjects_fo = json.load(f)
         return list(subjects_fo.keys())
