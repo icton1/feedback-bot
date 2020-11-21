@@ -10,7 +10,7 @@ eqc_email = "PUT EMAIL HERE"
 
 def send_to_eqc(message: Message):
     email_message = EmailMessage()
-    email_message.set_content(message)
+    email_message.set_content(message.text)
     email_message['Subject'] = f'Отзыв на преподавателя'
     email_message['From'] = server_email
     email_message['To'] = eqc_email
