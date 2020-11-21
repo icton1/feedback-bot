@@ -105,9 +105,7 @@ def show_teachers(set_message, context):
 
 def show_teacher_feedback(reply, teacher_name):
     teacher = bd_worker.read_teacher(teacher_name)
-    msg = str(teacher_name) + '\nОтзывы: ' + '\n***\n'.join(
-        teacher["feedback"]) + '\nРейтинг: ' + str(
-        sum(teacher["ratings"]) / len(teacher["ratings"]))
+    msg = str(teacher_name) + '\nРейтинг: ' + str(sum(teacher["ratings"]) / len(teacher["ratings"])) + '\nОтзывы:\n' + '\n***\n'.join(teacher["feedback"])
     reply(msg)
 
 
@@ -163,8 +161,8 @@ def add_rating(update: Update, context: CallbackContext):
                                       context.user_data['teacher_rating'])
         else:
             bd_worker.add_new_description(context.user_data['teacher_name'],
-                                      context.user_data['teacher_desc'],
-                                      context.user_data['teacher_rating'])
+                                          context.user_data['teacher_desc'],
+                                          context.user_data['teacher_rating'])
         main_reply(update.message.reply_text, context)
         return State.FIRST_NODE
     else:
