@@ -15,7 +15,7 @@ def get_main_keyboard(context):
     reply_keyboard = [[_(tr.HELLO, context)],
                       ['Обратиться в центр качества образования',
                        _(tr.CHANGE_LANG, context)],
-                      ['Отзыв о преподователе']]
+                      [_(tr.REVIEW, context)]]
     return ReplyKeyboardMarkup(
         reply_keyboard, one_time_keyboard=True
     )
