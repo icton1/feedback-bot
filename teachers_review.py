@@ -14,7 +14,7 @@ from states import State
 TEACHERS_KEYBOARD = 'TEACHERS_LIST'
 TEACHERS_INDEX = 'TEACHERS_LIST_INDEX'
 MAX_INLINE_CHARACTERS = 80
-MAX_INLINE_COLUMNS = 3
+MAX_INLINE_COLUMNS = 1
 MAX_INLINE_ROWS = 5
 
 
@@ -38,6 +38,9 @@ def start(update: Update, context: CallbackContext):
     elif update.message.text == _(tr.REVIEW_READ, context):
         update.message.reply_text("Начните вводить имя преподователя")
         return State.READ_T
+    elif update.message.text == 'Назад':
+        main_reply(update.message.reply_text, context)
+        return State.FIRST_NODE
     return None
 
 
