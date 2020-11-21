@@ -26,3 +26,5 @@ class State(Enum):
     HELP_MATCHED = auto()
     ADD_T_INLINE = auto()
     ADDICTIONAL_ADD = auto()
+    READ_FROM_SUBJECT = auto()
+    ADD_TO_SUBJECT = auto()

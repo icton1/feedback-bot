@@ -74,3 +74,16 @@ def read_subject(name):
             return None
         return subjects_fo[name]
 
+
+def get_all_subjects():
+    with open(filename, 'r') as f:
+        subjects_fo = json.load(f)
+        return list(subjects_fo.keys())
+
+
+def is_subject_exist(subject: str) -> bool:
+    with open(filename, 'r') as f:
+        subjects_fo = json.load(f)
+        if subject in subjects_fo.keys():
+            return True
+        return False
