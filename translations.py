@@ -14,8 +14,10 @@ HELP_TYPE_IM_WEAK = {'ru': 'Он(а) мне'}
 HELP_TYPE_IM_STRONK = {'ru': 'Я е(й)му'}
 HELP_AWARD_PROMPT = {'ru': 'Скажи сколько готов отдать'}
 HELP_DESCRIPTION_PROMPT = {'ru': 'Расскажи о себе, что тебе нужно'}
-
 HELP_LAST_PHRASE = {'ru': 'Пока :('}
+REVIEW_ADD = {'ru':'Добавить'}
+REVIEW_READ = {'ru':'Читать'}
+
 
 
 def gettext(phrase, context):
