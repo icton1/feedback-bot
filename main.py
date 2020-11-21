@@ -58,7 +58,7 @@ def first_node(update: Update, context: CallbackContext):
     elif text == _(tr.MENU_HELLO, context):
         hello(update, context)
         return
-    elif text == _(tr.MENU_CHANGE_LANG, context):
+    elif text == _(tr.MENU_SELECT_LANG, context):
         show_change_lang_prompt(update.effective_user.send_message, context)
         return State.CHANGE_LANG
     elif text == _(tr.MENU_SEND_FEEDBACK, context):
