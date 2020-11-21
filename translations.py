@@ -1,23 +1,29 @@
 HELLO = {'ru': 'Привет', 'newru': "ПрИвЕт!"}
 REVIEW = {'ru': 'Отзыв о преподователе', 'newru': "ОтзЫВ о ПрепоДОвАтелЕ"}
 
-HELP_WITH_LEARNING = {'ru': 'Нужна помощь с предметом?'}
-CHOOSE_YOUR_SUBJECT = {'ru': 'Выберите предмет'}
-POPULAR_SUBJECT1 = {'ru': 'Креатех'}
-POPULAR_SUBJECT2 = {'ru': 'КИК'}
-POPULAR_SUBJECT3 = {'ru': 'Физра'}
-POPULAR_SUBJECT_OTHER = {'ru': 'Сам введу'}
-POPULAR_SUBJECT_OTHER_PROMPT = {'ru': 'Ну вводи'}
-CHOOSE_HELP_TYPE = {'ru': 'Хто я'}
-HELP_TYPE_TOGETHER = {'ru': 'Вместе'}
-HELP_TYPE_IM_WEAK = {'ru': 'Он(а) мне'}
-HELP_TYPE_IM_STRONK = {'ru': 'Я е(й)му'}
-HELP_AWARD_PROMPT = {'ru': 'Скажи сколько готов отдать'}
-HELP_DESCRIPTION_PROMPT = {'ru': 'Расскажи о себе, что тебе нужно'}
-HELP_LAST_PHRASE = {'ru': 'Пока :('}
-REVIEW_ADD = {'ru':'Добавить'}
-REVIEW_READ = {'ru':'Читать'}
+# HELP_WITH_LEARNING = {'ru': 'Нужна помощь с предметом?'}
+# CHOOSE_YOUR_SUBJECT = {'ru': 'Выберите предмет'}
+# POPULAR_SUBJECT1 = {'ru': 'Креатех'}
+# POPULAR_SUBJECT2 = {'ru': 'КИК'}
+# POPULAR_SUBJECT3 = {'ru': 'Физра'}
+# POPULAR_SUBJECT_OTHER = {'ru': 'Сам введу'}
+# POPULAR_SUBJECT_OTHER_PROMPT = {'ru': 'Ну вводи'}
+# CHOOSE_HELP_TYPE = {'ru': 'Хто я'}
+# HELP_TYPE_TOGETHER = {'ru': 'Вместе'}
+# HELP_TYPE_IM_WEAK = {'ru': 'Он(а) мне'}
+# HELP_TYPE_IM_STRONK = {'ru': 'Я е(й)му'}
+# HELP_AWARD_PROMPT = {'ru': 'Скажи сколько готов отдать'}
+# HELP_DESCRIPTION_PROMPT = {'ru': 'Расскажи о себе, что тебе нужно'}
+# HELP_LAST_PHRASE = {'ru': 'Пока :('}
+# HELP_CHECK_REQUEST = {'ru': 'Проверь данные. Что хочешь поменять?'}
+# HELP_SUBJECT = {'ru': 'Предмет'}
+# HELP_TYPE = {'ru': 'Способ помощи'}
+# HELP_AWARD = {'ru': 'Награда'}
+# HELP_DESCRIPTION = {'ru': 'Описание'}
+# HELP_CHECK_OK = {'ru': 'Все ок!'}
 
+REVIEW_ADD = {'ru': 'Добавить'}
+REVIEW_READ = {'ru': 'Читать'}
 
 
 def gettext(phrase, context):
