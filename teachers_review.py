@@ -32,9 +32,8 @@ def read_t(update: Update, context: CallbackContext):
             update.message.reply_text('Найдено {} преподователей. Кто вас интересует?'.format(len(teachers)))
             update.message.reply_text('\n'.join(teachers))
         else:
-            update.message.reply_text(bd_worker.read_teacher(bd_worker.find_teacher(teachers)[0]))
+            update.message.reply_text(bd_worker.read_teacher(bd_worker.find_teacher(teachers[0])[0]))
     except Exception as e:
-        print(e)
         update.message.reply_text('Такого преподователя не найдено')
 
 def add_desc(update: Update, context: CallbackContext):
