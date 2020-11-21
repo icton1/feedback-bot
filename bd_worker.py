@@ -1,22 +1,26 @@
 import json
 
 
-def add_new_teacher(name, description, rating, number=None):
+def add_new_teacher(name, description='', rating=-1, number=None):
     with open('teachers.json', 'r') as f:
         teachers = json.load(f)
         teachers[name] = {"feedback": [], "ratings": []}
-        teachers[name]["feedback"].append(description)
-        teachers[name]["ratings"].append(rating)
-        teachers[name]["number"]=number
+        if description != '':
+            teachers[name]["feedback"].append(description)
+        if int(rating) >= 0:
+            teachers[name]["ratings"].append(rating)
+        teachers[name]["number"] = number
     with open('teachers.json', 'w') as f:
         json.dump(teachers, f)
 
 
-def add_new_description(name, description, rating, number = None):
+def add_new_description(name, description ='', rating = -1, number = None):
     with open('teachers.json', 'r') as f:
         teachers = json.load(f)
-        teachers[name]["feedback"].append(description)
-        teachers[name]["ratings"].append(rating)
+        if description != '':
+            teachers[name]["feedback"].append(description)
+        if int(rating) >= 0:
+            teachers[name]["ratings"].append(rating)
         teachers[name]["number"] = number
     with open('teachers.json', 'w') as f:
         json.dump(teachers, f)
