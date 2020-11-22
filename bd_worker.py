@@ -87,3 +87,19 @@ def is_subject_exist(subject: str) -> bool:
         if subject in subjects_fo.keys():
             return True
         return False
+
+
+# add_new_subject('Физика')
+# add_new_subject('Математика')
+# add_new_subject('Креативные технологии')
+# add_new_subject('Физическая культура')
+# add_new_subject('Иностранный язык')
+# add_new_teacher('Физика', 'Боярский Кирилл Кириллович')
+# add_new_teacher('Физика', 'Николаев Владимир Георгиевич')
+# add_new_teacher('Физика', 'Иванов Иван Иванович')
+# add_new_teacher('Математика', 'Иванов Иван Иванович')
+# add_new_teacher('Креативные технологии', 'Иванов Иван Иванович')
+# add_new_teacher('Иностранный язык', 'Иванов Иван Иванович')
+# add_new_teacher('Физическая культура', 'Иванов Иван Иванович')
+# add_new_teacher('Физическая культура', 'Сергеев Иван Олегович')
+
