@@ -158,7 +158,8 @@ def add_desc(update: Update, context: CallbackContext):
 
 
 def add_rating(update: Update, context: CallbackContext):
-    if update.message.text.isnumeric() and 0 <= int(update.message.text) <= 10:
+    if update.message.text.replace(',', '').replace('.', '').isnumeric() and 0 <= float(
+            update.message.text.replace(',', '.')) <= 10:
         context.user_data['teacher_rating'] = update.message.text
         teacher = bd_worker.read_teacher(context.user_data['subject'],
                                          context.user_data['teacher_name'])
