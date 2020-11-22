@@ -122,6 +122,10 @@ def save_subject_keyboards(subjects, context):
         lambda: [[_(tr.NOT_IN_LIST, context), ANSWER_NOT_IN_LIST]]
     )
 
+def save_subject_read_keyboards(subjects, context):
+    save_list_keyboard(
+        subjects, context,
+    )
 
 def show_subjects(set_message, context):
     return show_list_keyboard(set_message, context, tr.SUBJECT_LIST_TITLE)
