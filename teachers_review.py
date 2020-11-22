@@ -6,7 +6,7 @@ from translations import gettext as _
 from utils import (
     main_reply, MESSAGE_FILTER, save_list_keyboard,
     show_list_keyboard, handle_list_keyboard_query, save_subject_keyboards,
-    show_subjects, save_teachers_keyboards, ANSWER_NOT_IN_LIST, show_teachers,
+    show_subjects, save_teachers_read_keyboards, save_teachers_add_keyboards, ANSWER_NOT_IN_LIST, show_teachers,
     ANSWER_TYPE_AGAIN
 )
 
@@ -81,7 +81,7 @@ def add_t(update: Update, context: CallbackContext):
                                        update.message.text)
     if teachers:
         context.user_data['teacher_name'] = update.message.text
-        save_teachers_keyboards(teachers, context)
+        save_teachers_add_keyboards(teachers, context)
         show_teachers(update.message.reply_text, context)
         return State.ADD_T_INLINE
     else:
@@ -126,7 +126,7 @@ def read_t(update: Update, context: CallbackContext):
     if len(teachers) == 0:
         update.message.reply_text(_(tr.TEACHER_NOT_FOUND, context))
     elif len(teachers) > 1:
-        save_teachers_keyboards(teachers, context)
+        save_teachers_read_keyboards(teachers, context)
         show_teachers(update.message.reply_text, context)
         return State.READ_T_INLINE
     else:
