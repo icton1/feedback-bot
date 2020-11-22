@@ -98,17 +98,17 @@ def handle_list_keyboard_query(update, context, show, choose_option):
         return choose_option(update, context, data, reply)
 
 
-def save_teachers_keyboards(teachers, context):
+def save_teachers_read_keyboards(teachers, context):
     save_list_keyboard(
         teachers, context,
         lambda: [[_(tr.WRITE_ONE_MORE, context), ANSWER_TYPE_AGAIN]]
     )
 
 
-def get_add_teachers_keyboards(teachers, context):
-    return save_list_keyboard(
+def save_teachers_add_keyboards(teachers, context):
+    save_list_keyboard(
         teachers, context,
-        lambda: [[_(tr.NOT_IN_LIST, context), ANSWER_NOT_IN_LIST]]
+        lambda: [[_(tr.NOT_IN_LIST, context), ANSWER_TYPE_AGAIN]]
     )
 
 
@@ -122,6 +122,10 @@ def save_subject_keyboards(subjects, context):
         lambda: [[_(tr.NOT_IN_LIST, context), ANSWER_NOT_IN_LIST]]
     )
 
+def save_subject_read_keyboards(subjects, context):
+    save_list_keyboard(
+        subjects, context,
+    )
 
 def show_subjects(set_message, context):
     return show_list_keyboard(set_message, context, tr.SUBJECT_LIST_TITLE)

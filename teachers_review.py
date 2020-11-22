@@ -5,8 +5,8 @@ import translations as tr
 from translations import gettext as _
 from utils import (
     main_reply, MESSAGE_FILTER, save_list_keyboard,
-    show_list_keyboard, handle_list_keyboard_query, save_subject_keyboards,
-    show_subjects, save_teachers_keyboards, ANSWER_NOT_IN_LIST, show_teachers,
+    show_list_keyboard, handle_list_keyboard_query, save_subject_keyboards, save_subject_read_keyboards,
+    show_subjects, save_teachers_read_keyboards, save_teachers_add_keyboards, ANSWER_NOT_IN_LIST, show_teachers,
     ANSWER_TYPE_AGAIN
 )
 
@@ -32,7 +32,7 @@ def choose_action_type(update: Update, context: CallbackContext):
         show_subjects(update.message.reply_text, context)
         return State.ADD_TO_SUBJECT
     elif update.message.text == _(tr.REVIEW_READ, context):
-        save_subject_keyboards(bd_worker.get_all_subjects(), context)
+        save_subject_read_keyboards(bd_worker.get_all_subjects(), context)
         show_subjects(update.message.reply_text, context)
         return State.READ_FROM_SUBJECT
     elif update.message.text == _(tr.BACK, context):
@@ -59,6 +59,9 @@ def add_to_subject(update: Update, context: CallbackContext):
         if data == _(tr.BACK, context):
             main_reply(reply, context)
             return State.FIRST_NODE
+        elif data == ANSWER_NOT_IN_LIST:
+            reply("Введите название предмета")
+            return State.ADD_NEW_SUBJECT
         context.user_data['subject'] = data
         reply(_(tr.INPUT_FIO, context))
         return State.ADD_T
@@ -67,12 +70,20 @@ def add_to_subject(update: Update, context: CallbackContext):
                                       show_subjects, choose_option)
 
 
+def add_new_subject(update: Update, context: CallbackContext):
+    bd_worker.add_new_subject(update.message.text)
+    context.user_data['subject'] = update.message.text
+    update.message.reply_text("Предмет успешно добавлен")
+    update.message.reply_text(_(tr.INPUT_FIO, context))
+    return State.ADD_T
+
+
 def add_t(update: Update, context: CallbackContext):
     teachers = bd_worker.find_teachers(context.user_data['subject'],
                                        update.message.text)
     if teachers:
         context.user_data['teacher_name'] = update.message.text
-        save_teachers_keyboards(teachers, context)
+        save_teachers_add_keyboards(teachers, context)
         show_teachers(update.message.reply_text, context)
         return State.ADD_T_INLINE
     else:
@@ -117,7 +128,7 @@ def read_t(update: Update, context: CallbackContext):
     if len(teachers) == 0:
         update.message.reply_text(_(tr.TEACHER_NOT_FOUND, context))
     elif len(teachers) > 1:
-        save_teachers_keyboards(teachers, context)
+        save_teachers_read_keyboards(teachers, context)
         show_teachers(update.message.reply_text, context)
         return State.READ_T_INLINE
     else:
@@ -183,4 +194,5 @@ def get_states():
         State.ADD_RATING: [MessageHandler(MESSAGE_FILTER, add_rating)],
         State.READ_FROM_SUBJECT: [CallbackQueryHandler(read_from_subject)],
         State.ADD_TO_SUBJECT: [CallbackQueryHandler(add_to_subject)],
+        State.ADD_NEW_SUBJECT: [MessageHandler(MESSAGE_FILTER, add_new_subject)],
     }
