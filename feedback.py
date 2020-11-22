@@ -128,7 +128,7 @@ def get_teacher_info(update, context):
     teachers = bd_worker.find_teachers(context.user_data[SUBJECT],
                                        update.message.text)
 
-    utils.save_teachers_keyboards(teachers, context)
+    utils.save_teachers_read_keyboards(teachers, context)
     utils.show_teachers(update.message.reply_text, context)
     return State.FDBK_TEACHERS_LIST
 

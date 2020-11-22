@@ -77,6 +77,7 @@ def add_new_subject(update: Update, context: CallbackContext):
     update.message.reply_text(_(tr.INPUT_FIO, context))
     return State.ADD_T
 
+
 def add_t(update: Update, context: CallbackContext):
     teachers = bd_worker.find_teachers(context.user_data['subject'],
                                        update.message.text)
