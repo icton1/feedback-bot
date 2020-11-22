@@ -1,3 +1,4 @@
+import edit_distance
 import json
 filename = 'subjects.json'
 
@@ -27,15 +28,14 @@ def add_new_description(subject, name, description ='', rating = -1, number = No
         json.dump(subjects_fo, f)
 
 
-def find_teachers(subject, st):
+def find_teachers(subject, target):
     with open(filename, 'r') as f:
-        ret = []
         subjects_fo = json.load(f)
-        for i in subjects_fo[subject].keys():
-            #print(i)
-            if st in i or st in str(subjects_fo[subject][i]['number']):
-                ret.append(i)
-        return ret
+    teachers = list(subjects_fo[subject].keys())
+    teachers.sort(
+        key=lambda t: edit_distance.SequenceMatcher(a=target, b=t).distance()
+    )
+    return teachers
 
 
 def read_teacher(subject, name):

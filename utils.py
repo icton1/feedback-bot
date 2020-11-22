@@ -93,8 +93,8 @@ def handle_list_keyboard_query(update, context, show, choose_option):
         show(reply, context)
         return None
     else:
-        del context.user_data[LIST_KEYBOARD]
-        del context.user_data[LIST_KEYBOARD_INDEX]
+        context.user_data.pop(LIST_KEYBOARD)
+        context.user_data.pop(LIST_KEYBOARD_INDEX)
         return choose_option(update, context, data, reply)
 
 

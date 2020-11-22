@@ -60,7 +60,7 @@ def add_to_subject(update: Update, context: CallbackContext):
             main_reply(reply, context)
             return State.FIRST_NODE
         context.user_data['subject'] = data
-        update.message.reply_text(_(tr.INPUT_FIO, context))
+        reply(_(tr.INPUT_FIO, context))
         return State.ADD_T
 
     return handle_list_keyboard_query(update, context,
