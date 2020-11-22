@@ -60,7 +60,7 @@ def add_to_subject(update: Update, context: CallbackContext):
             main_reply(reply, context)
             return State.FIRST_NODE
         elif data == ANSWER_NOT_IN_LIST:
-            reply("Введите название предмета")
+            reply(_(tr.INPUT_SUBJ_NAME, context))
             return State.ADD_NEW_SUBJECT
         context.user_data['subject'] = data
         reply(_(tr.INPUT_FIO, context))
@@ -73,7 +73,7 @@ def add_to_subject(update: Update, context: CallbackContext):
 def add_new_subject(update: Update, context: CallbackContext):
     bd_worker.add_new_subject(update.message.text)
     context.user_data['subject'] = update.message.text
-    update.message.reply_text("Предмет успешно добавлен")
+    update.message.reply_text(_(tr.INPUT_SUBJ_NAME_SUCCESS, context))
     update.message.reply_text(_(tr.INPUT_FIO, context))
     return State.ADD_T
 
