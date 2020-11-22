@@ -7,6 +7,7 @@ import learning_help
 import teachers_review
 import feedback
 import utils
+import filters
 
 from telegram import Update, ReplyKeyboardMarkup, Message
 from telegram.ext import (
@@ -70,10 +71,17 @@ def choose_lang(update, context):
     return State.FIRST_NODE
 
 
+def send_bad_language(update, context):
+    with open('pivo.jpg', 'rb') as f:
+        update.message.reply_photo(photo=f)
+
+
 def main():
     updater = Updater(token, use_context=True)
 
     dispatcher = updater.dispatcher
+
+    dispatcher.add_handler(MessageHandler(filters.BAD_WORDS, send_bad_language))
 
     main_conv = ConversationHandler(
         entry_points=[MessageHandler(Filters.text, start)],
