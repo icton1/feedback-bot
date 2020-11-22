@@ -8,6 +8,7 @@ import teachers_review
 import feedback
 import utils
 import filters
+from random import choice
 
 from telegram import Update, ReplyKeyboardMarkup, Message
 from telegram.ext import (
@@ -20,6 +21,7 @@ from telegram.ext import (
 )
 
 POLL_STATE = 'POLL_STATE'
+USED_BAD_WORDS = 'USED_BAD_WORDS'
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -72,8 +74,19 @@ def choose_lang(update, context):
 
 
 def send_bad_language(update, context):
-    with open('pivo.jpg', 'rb') as f:
-        update.message.reply_photo(photo=f)
+    if context.user_data.setdefault(USED_BAD_WORDS, False):
+        context.user_data[USED_BAD_WORDS] = True
+        with open('pivo.jpg', 'rb') as photo:
+            update.message.reply_photo(photo=photo)
+    else:
+        pic = choice(['pivo.jpg', 'mati_bad.jpg',
+                      'no_mat_please.jpg', 'sticker_mati'])
+        if pic == 'sticker_mati':
+            pass
+            # TODO update.message.reply_sticker()
+        else:
+            with open(pic, 'rb') as photo:
+                update.message.reply_photo(photo=photo)
 
 
 def main():

@@ -1,4 +1,4 @@
-from telegram.ext.filters import BaseFilter
+from telegram.ext.filters import BaseFilter, MessageFilter
 import re
 
 bad_words = '''
@@ -83,7 +83,7 @@ zaeb, zaebal, zaebali, zaebat, архипиздрит, ахуел, ахуеть,
 bad_words = set(bad_words.replace(' ', '').replace('\n', '').split(','))
 
 
-class BadMessagesFilter(BaseFilter):
+class BadMessagesFilter(MessageFilter):
     pattern = re.compile('^[a-zA-Zа-яА-Я]$')
 
     def filter(self, message):
@@ -91,10 +91,12 @@ class BadMessagesFilter(BaseFilter):
         if text is None:
             return False
         words = [letter for letter in text
-                if BadMessagesFilter.pattern.fullmatch(letter) or letter == ' ']
+                 if BadMessagesFilter.pattern.fullmatch(letter)
+                 or letter == ' ']
         for word in ''.join(words).split():
             if word and word in bad_words:
                 return True
         return False
+
 
 BAD_WORDS = BadMessagesFilter()
