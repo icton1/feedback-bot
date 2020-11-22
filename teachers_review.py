@@ -5,7 +5,7 @@ import translations as tr
 from translations import gettext as _
 from utils import (
     main_reply, MESSAGE_FILTER, save_list_keyboard,
-    show_list_keyboard, handle_list_keyboard_query, save_subject_keyboards,
+    show_list_keyboard, handle_list_keyboard_query, save_subject_keyboards, save_subject_read_keyboards,
     show_subjects, save_teachers_read_keyboards, save_teachers_add_keyboards, ANSWER_NOT_IN_LIST, show_teachers,
     ANSWER_TYPE_AGAIN
 )
@@ -32,7 +32,7 @@ def choose_action_type(update: Update, context: CallbackContext):
         show_subjects(update.message.reply_text, context)
         return State.ADD_TO_SUBJECT
     elif update.message.text == _(tr.REVIEW_READ, context):
-        save_subject_keyboards(bd_worker.get_all_subjects(), context)
+        save_subject_read_keyboards(bd_worker.get_all_subjects(), context)
         show_subjects(update.message.reply_text, context)
         return State.READ_FROM_SUBJECT
     elif update.message.text == _(tr.BACK, context):
