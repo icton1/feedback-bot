@@ -12,6 +12,7 @@ class State(Enum):
     ADD_RATING = auto()
 
     FDBK_SUBJECTS_LIST = auto()
+    FDBK_ADD_NEW_SUBJECT = auto()
     FDBK_GET_TEACHER_INFO = auto()
     FDBK_TEACHERS_LIST = auto()
     FDBK_POLLS = auto()

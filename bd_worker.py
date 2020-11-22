@@ -32,8 +32,9 @@ def find_teachers(subject, target):
     with open(filename, 'r') as f:
         subjects_fo = json.load(f)
     teachers = list(subjects_fo[subject].keys())
+    target = target.lower()
     teachers.sort(
-        key=lambda t: edit_distance.SequenceMatcher(a=target, b=t).distance()
+        key=lambda t: edit_distance.SequenceMatcher(a=target, b=t.lower()).distance()
     )
     return teachers
 

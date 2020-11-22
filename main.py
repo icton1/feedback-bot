@@ -85,6 +85,11 @@ def send_bad_language(update, context):
             update.message.reply_photo(photo=photo)
 
 
+def stop(update, context):
+    utils.main_reply(update.effective_user.send_message, context)
+    return State.FIRST_NODE
+
+
 def main():
     updater = Updater(token, use_context=True)
 
@@ -102,7 +107,7 @@ def main():
             **teachers_review.get_states(),
             **feedback.get_states()
         },
-        fallbacks=[CommandHandler('stop', start)],
+        fallbacks=[CommandHandler('stop', stop)],
     )
 
     dispatcher.add_handler(main_conv)

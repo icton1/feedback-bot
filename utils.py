@@ -8,7 +8,7 @@ from translations import gettext as _
 
 LIST_KEYBOARD = 'LIST_KEYBOARD'
 LIST_KEYBOARD_INDEX = 'LIST_KEYBOARD_INDEX'
-MAX_INLINE_CHARACTERS = 80
+MAX_INLINE_CHARACTERS = 50
 MAX_INLINE_COLUMNS = 1
 MAX_INLINE_ROWS = 5
 
@@ -20,9 +20,15 @@ ANSWER_NOT_IN_LIST = 'NOT_IN_LIST'
 ANSWER_TYPE_AGAIN = 'TYPE_AGAIN'
 
 
+def trunc(s, length):
+    return s if len(s) <= length else s[:length] + '...'
+
+
 def make_inline_keyboard(rows):
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton(text, callback_data=data) for text, data in row]
+        [InlineKeyboardButton(trunc(text, MAX_INLINE_CHARACTERS),
+                              callback_data=data)
+         for text, data in row]
         for row in rows
     ])
 
@@ -108,7 +114,7 @@ def save_teachers_read_keyboards(teachers, context):
 def save_teachers_add_keyboards(teachers, context):
     save_list_keyboard(
         teachers, context,
-        lambda: [[_(tr.NOT_IN_LIST, context), ANSWER_TYPE_AGAIN]]
+        lambda: [[_(tr.NOT_IN_LIST, context), ANSWER_NOT_IN_LIST]]
     )
 
 
