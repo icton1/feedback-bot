@@ -35,3 +35,4 @@ class State(Enum):
     ADDICTIONAL_ADD = auto()
     READ_FROM_SUBJECT = auto()
     ADD_TO_SUBJECT = auto()
+    ADD_NEW_SUBJECT = auto()

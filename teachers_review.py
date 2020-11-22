@@ -59,6 +59,9 @@ def add_to_subject(update: Update, context: CallbackContext):
         if data == _(tr.BACK, context):
             main_reply(reply, context)
             return State.FIRST_NODE
+        elif data == ANSWER_NOT_IN_LIST:
+            update.effective_user.send_message("Введите название предмета")
+            return State.ADD_NEW_SUBJECT
         context.user_data['subject'] = data
         reply(_(tr.INPUT_FIO, context))
         return State.ADD_T
@@ -66,6 +69,12 @@ def add_to_subject(update: Update, context: CallbackContext):
     return handle_list_keyboard_query(update, context,
                                       show_subjects, choose_option)
 
+
+def add_new_subject(update: Update, context: CallbackContext):
+    bd_worker.add_new_subject(update.message.text)
+    update.message.reply_text("Предмет успешно добавлен")
+    update.message.reply_text(_(tr.INPUT_FIO, context))
+    return State.ADD_T
 
 def add_t(update: Update, context: CallbackContext):
     teachers = bd_worker.find_teachers(context.user_data['subject'],
@@ -183,4 +192,5 @@ def get_states():
         State.ADD_RATING: [MessageHandler(MESSAGE_FILTER, add_rating)],
         State.READ_FROM_SUBJECT: [CallbackQueryHandler(read_from_subject)],
         State.ADD_TO_SUBJECT: [CallbackQueryHandler(add_to_subject)],
+        State.ADD_NEW_SUBJECT: [MessageHandler(MESSAGE_FILTER, add_new_subject)],
     }

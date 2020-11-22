@@ -1,4 +1,4 @@
-from telegram.ext.filters import BaseFilter, MessageFilter
+from telegram.ext.filters import MessageFilter
 import re
 
 bad_words = '''
