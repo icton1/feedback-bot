@@ -80,13 +80,9 @@ def send_bad_language(update, context):
             update.message.reply_photo(photo=photo)
     else:
         pic = choice(['pivo.jpg', 'mati_bad.jpg',
-                      'no_mat_please.jpg', 'sticker_mati'])
-        if pic == 'sticker_mati':
-            pass
-            # TODO update.message.reply_sticker()
-        else:
-            with open(pic, 'rb') as photo:
-                update.message.reply_photo(photo=photo)
+                      'no_mat_please.jpg'])
+        with open(pic, 'rb') as photo:
+            update.message.reply_photo(photo=photo)
 
 
 def main():
