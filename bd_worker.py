@@ -94,6 +94,7 @@ def drop(are_you_sure : bool) -> None:
             f.write('{}')
 
 
+#recommit
 # drop(True)
 # add_new_subject('Физика')
 # add_new_subject('Математика')
