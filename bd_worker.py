@@ -9,8 +9,8 @@ def add_new_teacher(subject, name, description='', rating=-1, number=None):
         subjects_fo[subject][name] = {"feedback": [], "ratings": []}
         if description != '':
             subjects_fo[subject][name]["feedback"].append(description)
-        if int(rating) >= 0:
-            subjects_fo[subject][name]["ratings"].append(int(rating))
+        if float(rating) >= 0:
+            subjects_fo[subject][name]["ratings"].append(float(rating))
         subjects_fo[subject][name]["number"] = number
     with open(filename, 'w') as f:
         json.dump(subjects_fo, f)
@@ -21,8 +21,8 @@ def add_new_description(subject, name, description ='', rating = -1, number = No
         subjects_fo = json.load(f)
         if description != '':
             subjects_fo[subject][name]["feedback"].append(description)
-        if int(rating) >= 0:
-            subjects_fo[subject][name]["ratings"].append(int(rating))
+        if float(rating) >= 0:
+            subjects_fo[subject][name]["ratings"].append(float(rating))
         subjects_fo[subject][name]["number"] = number
     with open(filename, 'w') as f:
         json.dump(subjects_fo, f)
