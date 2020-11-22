@@ -116,6 +116,9 @@ def get_comments(update, context):
 
 def handle_subjects_list(update, context):
     def choose_option(update, context, data, reply):
+        if data == utils.ANSWER_NOT_IN_LIST:
+            reply(_(tr.INPUT_SUBJ_NAME, context))
+            return State.FDBK_ADD_NEW_SUBJECT
         context.user_data[SUBJECT] = data
         reply(_(tr.START_INPUTING_NAMES, context))
         return State.FDBK_GET_TEACHER_INFO
@@ -128,7 +131,7 @@ def get_teacher_info(update, context):
     teachers = bd_worker.find_teachers(context.user_data[SUBJECT],
                                        update.message.text)
 
-    utils.save_teachers_keyboards(teachers, context)
+    utils.save_teachers_read_keyboards(teachers, context)
     utils.show_teachers(update.message.reply_text, context)
     return State.FDBK_TEACHERS_LIST
 
@@ -150,9 +153,19 @@ def handle_teachers_list(update, context):
                                             utils.show_teachers, choose_option)
 
 
+def add_new_subject(update: Update, context: CallbackContext):
+    bd_worker.add_new_subject(update.message.text)
+    context.user_data[SUBJECT] = update.message.text
+    update.message.reply_text(_(tr.INPUT_SUBJ_NAME_SUCCESS, context))
+    update.message.reply_text(_(tr.START_INPUTING_NAMES, context))
+    return State.FDBK_GET_TEACHER_INFO
+
+
 def get_states():
     return {
         State.FDBK_SUBJECTS_LIST: [CallbackQueryHandler(handle_subjects_list)],
+        State.FDBK_ADD_NEW_SUBJECT: [MessageHandler(utils.MESSAGE_FILTER,
+                                                    add_new_subject)],
         State.FDBK_GET_TEACHER_INFO: [MessageHandler(utils.MESSAGE_FILTER,
                                                      get_teacher_info)],
         State.FDBK_TEACHERS_LIST: [CallbackQueryHandler(handle_teachers_list)],
