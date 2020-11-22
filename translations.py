@@ -36,7 +36,7 @@ INPUT_FIO = {'ru': 'Введите ФИО преподователя'}
 OTZYV = {'ru': 'Оставьте отзыв о преподователе'}
 INPUT_ALL_FIO = {'ru': 'Введите полное ФИО'}
 WRITE_ONE_MORE = {'ru': 'Написать заново'}
-START_INPUTING_NAMES = {'ru': '"Начните вводить имя преподователя"'}
+START_INPUTING_NAMES = {'ru': 'Начните вводить имя преподователя'}
 TEACHER_LIST_TITLE = {'ru': 'Учителя'}
 SUBJECT_LIST_TITLE = {'ru': 'Выберите предмет'}
 TEACHER_NOT_FOUND = {'ru': 'Такого преподователя не найдено'}
@@ -48,7 +48,7 @@ WRONG_RATING = {'ru': 'Неправильный рейтинг, выберите
 NOT_IN_LIST = {'ru': 'Нет в списке?'}
 
 # Тут как мы показываем отзыв
-TEACHER_PROFILE_PATTERN = {'ru': '''
+TEACHER_FEEDBACK_PATTERN = {'ru': '''
 {teacher}
 Рейтинг: {rating}
 Отзывы:

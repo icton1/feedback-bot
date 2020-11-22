@@ -2,6 +2,7 @@ from telegram import Update, PollAnswer
 from telegram.ext import PollAnswerHandler, CallbackContext, \
     CallbackQueryHandler, MessageHandler, Filters
 
+import bd_worker
 import utils
 from states import State
 import os
@@ -9,6 +10,8 @@ import os.path
 import translations as tr
 from translations import gettext as _
 
+SUBJECT = 'SUBJECT'
+TEACHER = 'TEACHER'
 POLL_INDEX = 'POLL_INDEX'
 ANSWERS = 'ANSWERS'
 ANSWER_COMMENT = 'ANSWER_COMMENT'
@@ -50,11 +53,6 @@ def any_comments_prompt(reply, context):
 
 def process_polls(update, context):
     lang = context.user_data.get('lang', 'ru')
-    if POLL_INDEX not in context.user_data.keys():
-        context.user_data[ANSWERS] = []
-        context.user_data[POLL_INDEX] = 0
-        POLLS[lang][0].send_poll(update.effective_user.send_message)
-        return State.FDBK_POLLS
 
     poll_index = context.user_data[POLL_INDEX]
     poll = POLLS[lang][poll_index]
@@ -73,7 +71,9 @@ def process_polls(update, context):
 
 
 def start(update, context):
-    return process_polls(update, context)
+    utils.save_subject_keyboards(bd_worker.get_all_subjects(), context)
+    utils.show_subjects(update.message.reply_text, context)
+    return State.FDBK_SUBJECTS_LIST
 
 
 def save_to_csv(lang, answer):
@@ -114,11 +114,51 @@ def get_comments(update, context):
     return finish(send_new, send_new, context)
 
 
+def handle_subjects_list(update, context):
+    def choose_option(update, context, data, reply):
+        context.user_data[SUBJECT] = data
+        reply(_(tr.START_INPUTING_NAMES, context))
+        return State.FDBK_GET_TEACHER_INFO
+
+    return utils.handle_list_keyboard_query(update, context,
+                                            utils.show_subjects, choose_option)
+
+
+def get_teacher_info(update, context):
+    teachers = bd_worker.find_teachers(context.user_data[SUBJECT],
+                                       update.message.text)
+
+    utils.save_teachers_keyboards(teachers, context)
+    utils.show_teachers(update.message.reply_text, context)
+    return State.FDBK_TEACHERS_LIST
+
+
+def handle_teachers_list(update, context):
+    def choose_option(update, context, data, reply):
+        if data == utils.ANSWER_TYPE_AGAIN:
+            reply(_(tr.START_INPUTING_NAMES, context))
+            return State.FDBK_GET_TEACHER_INFO
+        else:
+            context.user_data[TEACHER] = data
+            context.user_data[ANSWERS] = []
+            context.user_data[POLL_INDEX] = 0
+            poll = POLLS[context.user_data.get('lang', 'ru')][0]
+            poll.send_poll(reply)
+            return State.FDBK_POLLS
+
+    return utils.handle_list_keyboard_query(update, context,
+                                            utils.show_teachers, choose_option)
+
+
 def get_states():
     return {
+        State.FDBK_SUBJECTS_LIST: [CallbackQueryHandler(handle_subjects_list)],
+        State.FDBK_GET_TEACHER_INFO: [MessageHandler(utils.MESSAGE_FILTER,
+                                                     get_teacher_info)],
+        State.FDBK_TEACHERS_LIST: [CallbackQueryHandler(handle_teachers_list)],
         State.FDBK_POLLS: [CallbackQueryHandler(process_polls)],
         State.FDBK_POLLS_ASK_COMMENTS: [CallbackQueryHandler(ask_comments)],
         State.FDBK_POLLS_GET_COMMENTS: [
-            MessageHandler(Filters.text, get_comments)
+            MessageHandler(utils.MESSAGE_FILTER, get_comments)
         ],
     }

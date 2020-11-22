@@ -49,14 +49,7 @@ def show_change_lang_prompt(reply, context):
 def first_node(update: Update, context: CallbackContext):
     text = update.message.text
     if text == _(tr.MENU_REVIEW, context):
-        reply_keyboard = [[_(tr.REVIEW_READ, context),
-                           _(tr.REVIEW_ADD, context)],
-                          [_(tr.BACK, context)]]
-        update.message.reply_text(_(tr.READ_OR_ADD, context),
-                                  reply_markup=ReplyKeyboardMarkup(
-                                      reply_keyboard, one_time_keyboard=True
-                                  ))
-        return State.REVIEW
+        return teachers_review.start(update, context)
     elif text == _(tr.MENU_HELLO, context):
         hello(update, context)
         return
